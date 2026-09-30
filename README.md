@@ -19,7 +19,7 @@
    min-height: 100vh;
  }
  .tournament-wrapper {
-   max-width: 850px;
+   max-width: 1400px;
    margin: 0 auto;
  }
  .join-section {
@@ -49,8 +49,16 @@
    cursor: not-allowed;
    transform: none;
  }
- .participants-table {
-   width: 100%;
+ .columns-container {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 20px;
+   justify-content: center;
+ }
+ .column-table {
+   flex: 1 1 380px;
+   min-width: 320px;
+   max-width: 500px;
    border-collapse: separate;
    border-spacing: 0;
    background: rgba(10,20,50,0.6);
@@ -61,35 +69,35 @@
    border: 1px solid rgba(74,158,255,0.25);
    box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
  }
- .participants-table th {
+ .column-table th {
    background: linear-gradient(135deg, #0a2a6b, #1a4a8b);
    color: #fff;
-   padding: 16px 18px;
+   padding: 14px 16px;
    text-align: left;
    font-weight: 800;
-   font-size: 15px;
+   font-size: 14px;
    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
    border-bottom: 2px solid rgba(74,158,255,0.5);
    letter-spacing: 0.5px;
  }
- .participants-table td {
-   padding: 14px 18px;
+ .column-table td {
+   padding: 12px 16px;
    border-bottom: 1px solid rgba(255,255,255,0.07);
-   font-size: 15px;
+   font-size: 14px;
    color: #fff;
  }
- .participants-table tr:last-child td {
+ .column-table tr:last-child td {
    border-bottom: none;
  }
- .participants-table tr:nth-child(even) td {
+ .column-table tr:nth-child(even) td {
    background: rgba(255,255,255,0.04);
  }
- .participants-table tr:hover td {
+ .column-table tr:hover td {
    background: rgba(74,158,255,0.08);
    transition: background 0.2s;
  }
  .row-number {
-   width: 60px;
+   width: 50px;
    text-align: center;
  }
  .number-highlight {
@@ -100,7 +108,7 @@
    color: #fff;
    text-shadow: 0 0 5px #0a2a6b, 0 0 10px #0a2a6b;
    display: inline-block;
-   font-size: 17px;
+   font-size: 16px;
  }
  .nick-highlight {
    font-weight: 800;
@@ -257,18 +265,7 @@
 
   <div id="joinSection" class="join-section"></div>
 
-  <table class="participants-table">
-    <thead>
-      <tr>
-        <th style="text-align:center;">№</th>
-        <th>Участник</th>
-        <th style="width:90px;">Действие</th>
-      </tr>
-    </thead>
-    <tbody id="participantsBody">
-      <tr><td colspan="3" class="no-participants">Пока нет участников. Будь первым!</td></tr>
-    </tbody>
-  </table>
+  <div id="participantsContainer" class="columns-container"></div>
 
   <div class="admin-login-row">
     <input type="password" id="adminPassInput" placeholder="Админ-пароль" onkeydown="if(event.key==='Enter') toggleAdmin()">
@@ -305,6 +302,7 @@ const db = firebase.database();
 const participantsRef = db.ref('tournament/participants');
 
 const ADMIN_PASSWORD = '12$sacreD';
+const MAX_PER_COLUMN = 20;
 let isAdmin = false;
 let myNick = null;
 
@@ -330,10 +328,12 @@ function renderTable(snapshot) {
     return (a[1].order || 0) - (b[1].order || 0);
   });
 
-  const tbody = document.getElementById('participantsBody');
+  const container = document.getElementById('participantsContainer');
 
   if (entries.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="3" class="no-participants">Пока нет участников. Будь первым!</td></tr>';
+    container.innerHTML = '<table class="column-table" style="max-width:500px;"><tbody>'
+      + '<tr><td colspan="3" class="no-participants">Пока нет участников. Будь первым!</td></tr>'
+      + '</tbody></table>';
     return;
   }
 
@@ -352,23 +352,40 @@ function renderTable(snapshot) {
     }
   }
 
-  let html = '';
-  entries.forEach(function(entry, index) {
-    const id = entry[0];
-    const p = entry[1];
-    const num = index + 1;
-    const isBot = p.isBot === true;
-    const delBtn = isAdmin
-      ? '<button class="del-btn" onclick="removeParticipant(\'' + id + '\')">Удалить</button>'
-      : '';
-    html += '<tr>'
-      + '<td class="row-number"><span class="number-highlight">' + num + ')</span></td>'
-      + '<td><span class="nick-highlight">' + escapeHtml(p.name) + '</span>' + (isBot ? '<span class="bot-badge">БОТ</span>' : '') + '</td>'
-      + '<td>' + delBtn + '</td>'
-      + '</tr>';
-  });
-  tbody.innerHTML = html;
+  // Разбиваем на колонки по MAX_PER_COLUMN
+  var columns = [];
+  for (var i = 0; i < entries.length; i += MAX_PER_COLUMN) {
+    columns.push(entries.slice(i, i + MAX_PER_COLUMN));
+  }
 
+  var html = '';
+  columns.forEach(function(chunk) {
+    html += '<table class="column-table"><thead><tr>'
+      + '<th style="text-align:center;">№</th>'
+      + '<th>Участник</th>'
+      + '<th style="width:80px;">Действие</th>'
+      + '</tr></thead><tbody>';
+
+    chunk.forEach(function(entry, index) {
+      var globalIndex = columns.indexOf(chunk) * MAX_PER_COLUMN + index;
+      var id = entry[0];
+      var p = entry[1];
+      var num = globalIndex + 1;
+      var isBot = p.isBot === true;
+      var delBtn = isAdmin
+        ? '<button class="del-btn" onclick="removeParticipant(\'' + id + '\')">Удалить</button>'
+        : '';
+      html += '<tr>'
+        + '<td class="row-number"><span class="number-highlight">' + num + ')</span></td>'
+        + '<td><span class="nick-highlight">' + escapeHtml(p.name) + '</span>' + (isBot ? '<span class="bot-badge">БОТ</span>' : '') + '</td>'
+        + '<td>' + delBtn + '</td>'
+        + '</tr>';
+    });
+
+    html += '</tbody></table>';
+  });
+
+  container.innerHTML = html;
   document.getElementById('adminPanel').style.display = isAdmin ? 'block' : 'none';
 }
 
