@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -21,24 +22,6 @@
  .tournament-wrapper {
    max-width: 800px;
    margin: 0 auto;
- }
- .tournament-title {
-   text-align: center;
-   font-size: 28px;
-   font-weight: 800;
-   color: #fff;
-   text-shadow: 0 0 6px #0a2a6b, 0 0 12px #0a2a6b;
-   margin-bottom: 20px;
- }
- .tournament-image {
-   text-align: center;
-   margin-bottom: 25px;
- }
- .tournament-image img {
-   max-width: 100%;
-   height: auto;
-   border-radius: 10px;
-   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
  }
  .join-section {
    text-align: center;
@@ -221,11 +204,6 @@
 <body>
 
 <div class="tournament-wrapper">
-  <div class="tournament-title">Архивные турниры</div>
-
-  <div class="tournament-image">
-    <img src="https://4ak4ak.moy.su/kolo13.jpg" alt="Турнир">
-  </div>
 
   <div id="joinSection" class="join-section"></div>
 
@@ -276,12 +254,11 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const participantsRef = db.ref('tournament/participants');
 
-const ADMIN_PASSWORD = '12$sacreD';
+const ADMIN_PASSWORD = '12$sacreD!';
 let isAdmin = false;
 let myId = null;
 let myNick = null;
 
-// Получаем ник из URL (?user=НИК)
 function getUrlParam(name) {
   var url = new URL(window.location.href);
   return url.searchParams.get(name);
@@ -312,7 +289,6 @@ participantsRef.on('value', function(snapshot) {
     return;
   }
 
-  // Проверяем, участвует ли уже текущий юзер
   let alreadyJoined = false;
   if (myNick) {
     alreadyJoined = entries.some(function(e) {
