@@ -132,6 +132,22 @@
    text-transform: uppercase;
    letter-spacing: 0.5px;
  }
+ .you-avatar {
+   display: inline-block;
+   width: 28px;
+   height: 28px;
+   border-radius: 50%;
+   margin-left: 8px;
+   vertical-align: middle;
+   border: 2px solid #4a9eff;
+   box-shadow: 0 0 10px rgba(74,158,255,0.7), 0 0 4px rgba(74,158,255,0.5);
+   animation: pulse-glow 2s ease-in-out infinite;
+   object-fit: cover;
+ }
+ @keyframes pulse-glow {
+   0%, 100% { box-shadow: 0 0 8px rgba(74,158,255,0.6); }
+   50% { box-shadow: 0 0 18px rgba(74,158,255,0.9), 0 0 6px rgba(74,158,255,0.7); }
+ }
  .no-participants {
    text-align: center;
    padding: 40px;
@@ -303,6 +319,7 @@ const participantsRef = db.ref('tournament/participants');
 
 const ADMIN_PASSWORD = '12$sacreD';
 const MAX_PER_COLUMN = 20;
+const YOU_AVATAR_URL = 'https://4ak4ak.moy.su/logo1.jpg';
 let isAdmin = false;
 let myNick = null;
 
@@ -372,12 +389,14 @@ function renderTable(snapshot) {
       var p = entry[1];
       var num = globalIndex + 1;
       var isBot = p.isBot === true;
+      var isMe = myNick && p.name && p.name.toLowerCase() === myNick.toLowerCase();
       var delBtn = isAdmin
         ? '<button class="del-btn" onclick="removeParticipant(\'' + id + '\')">Удалить</button>'
         : '';
+      var avatar = isMe ? '<img src="' + YOU_AVATAR_URL + '" class="you-avatar" alt="Это ты">' : '';
       html += '<tr>'
         + '<td class="row-number"><span class="number-highlight">' + num + ')</span></td>'
-        + '<td><span class="nick-highlight">' + escapeHtml(p.name) + '</span>' + (isBot ? '<span class="bot-badge">БОТ</span>' : '') + '</td>'
+        + '<td><span class="nick-highlight">' + escapeHtml(p.name) + '</span>' + (isBot ? '<span class="bot-badge">БОТ</span>' : '') + avatar + '</td>'
         + '<td>' + delBtn + '</td>'
         + '</tr>';
     });
