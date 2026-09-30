@@ -1,4 +1,3 @@
-
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -7,9 +6,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
  * { margin: 0; padding: 0; box-sizing: border-box; }
+ html, body { height: 100%; }
  body {
    font-family: 'Inter', sans-serif;
-   background: #1a1a2e;
+   background-image: url('https://4ak4ak.moy.su/kolo13.jpg');
+   background-size: cover;
+   background-position: center;
+   background-repeat: no-repeat;
+   background-attachment: fixed;
    color: #fff;
    padding: 20px;
    min-height: 100vh;
@@ -36,38 +40,27 @@
    border-radius: 10px;
    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
  }
- .login-section {
+ .join-section {
    text-align: center;
-   margin-bottom: 20px;
+   margin-bottom: 25px;
  }
- .login-section input {
-   padding: 10px 14px;
-   border: 1px solid rgba(255,255,255,0.2);
-   border-radius: 6px;
-   background: rgba(0,0,0,0.3);
-   color: #fff;
-   font-size: 14px;
-   margin: 0 5px;
-   width: 200px;
- }
- .login-section input::placeholder { color: #666; }
  .btn-join {
    display: inline-block;
-   padding: 12px 28px;
-   font-size: 16px;
+   padding: 16px 40px;
+   font-size: 18px;
    font-weight: 700;
    color: #fff;
    background: linear-gradient(135deg, #0a2a6b, #1a4a8b);
-   border: none;
-   border-radius: 8px;
+   border: 2px solid rgba(255,255,255,0.3);
+   border-radius: 50px;
    cursor: pointer;
-   transition: transform 0.2s, box-shadow 0.2s;
-   vertical-align: middle;
-   margin-left: 5px;
+   transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+   box-shadow: 0 4px 14px rgba(10,42,107,0.4);
  }
  .btn-join:hover {
    transform: translateY(-2px);
-   box-shadow: 0 6px 16px rgba(10,42,107,0.5);
+   box-shadow: 0 8px 22px rgba(10,42,107,0.6);
+   background: linear-gradient(135deg, #1a4a8b, #2a6abb);
  }
  .btn-join:disabled {
    opacity: 0.5;
@@ -76,34 +69,44 @@
  }
  .participants-table {
    width: 100%;
-   border-collapse: collapse;
-   background: rgba(255,255,255,0.05);
-   border-radius: 10px;
+   border-collapse: separate;
+   border-spacing: 0;
+   background: rgba(10,20,50,0.55);
+   backdrop-filter: blur(8px);
+   -webkit-backdrop-filter: blur(8px);
+   border-radius: 12px;
    overflow: hidden;
+   border: 1px solid rgba(255,255,255,0.15);
+   box-shadow: 0 8px 32px rgba(0,0,0,0.5);
  }
  .participants-table th {
-   background: #0a2a6b;
+   background: rgba(10,42,107,0.85);
    color: #fff;
-   padding: 12px;
+   padding: 14px;
    text-align: left;
    font-weight: 700;
-   font-size: 14px;
+   font-size: 15px;
+   text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+   border-bottom: 2px solid rgba(74,158,255,0.4);
  }
  .participants-table td {
-   padding: 10px 12px;
-   border-bottom: 1px solid rgba(255,255,255,0.1);
-   font-size: 14px;
+   padding: 12px 14px;
+   border-bottom: 1px solid rgba(255,255,255,0.08);
+   font-size: 15px;
+   color: #fff;
  }
  .participants-table tr:last-child td {
    border-bottom: none;
  }
- .participants-table tr:nth-child(even) {
-   background: rgba(255,255,255,0.03);
+ .participants-table tr:nth-child(even) td {
+   background: rgba(255,255,255,0.04);
  }
  .row-number {
    font-weight: 800;
    color: #4a9eff;
-   width: 50px;
+   width: 60px;
+   font-size: 16px;
+   text-shadow: 0 0 6px rgba(74,158,255,0.5);
  }
  .bot-badge {
    display: inline-block;
@@ -112,26 +115,31 @@
    font-size: 11px;
    padding: 2px 8px;
    border-radius: 4px;
-   margin-left: 6px;
+   margin-left: 8px;
    font-weight: 600;
+   box-shadow: 0 2px 6px rgba(231,76,60,0.4);
  }
  .no-participants {
    text-align: center;
-   padding: 30px;
-   color: #888;
-   font-size: 15px;
+   padding: 35px;
+   color: rgba(255,255,255,0.6);
+   font-size: 16px;
+   font-style: italic;
  }
  .admin-panel {
    margin-top: 25px;
-   padding: 20px;
-   background: rgba(10,42,107,0.15);
-   border: 1px solid rgba(10,42,107,0.4);
-   border-radius: 10px;
+   padding: 22px;
+   background: rgba(10,42,107,0.25);
+   backdrop-filter: blur(6px);
+   -webkit-backdrop-filter: blur(6px);
+   border: 1px solid rgba(74,158,255,0.3);
+   border-radius: 12px;
  }
  .admin-panel h3 {
-   font-size: 16px;
+   font-size: 17px;
    margin-bottom: 15px;
    color: #4a9eff;
+   text-shadow: 0 0 8px rgba(74,158,255,0.4);
  }
  .admin-row {
    display: flex;
@@ -142,46 +150,71 @@
  .admin-row input {
    flex: 1;
    min-width: 150px;
-   padding: 10px;
+   padding: 11px;
    border: 1px solid rgba(255,255,255,0.2);
-   border-radius: 6px;
-   background: rgba(0,0,0,0.3);
+   border-radius: 8px;
+   background: rgba(0,0,0,0.35);
    color: #fff;
    font-size: 14px;
  }
- .admin-row input::placeholder { color: #666; }
+ .admin-row input::placeholder { color: rgba(255,255,255,0.4); }
  .btn-admin {
-   padding: 10px 18px;
+   padding: 11px 20px;
    border: none;
-   border-radius: 6px;
+   border-radius: 8px;
    font-weight: 600;
    cursor: pointer;
    font-size: 14px;
-   transition: opacity 0.2s;
+   transition: opacity 0.2s, transform 0.2s;
  }
- .btn-admin:hover { opacity: 0.85; }
+ .btn-admin:hover { opacity: 0.85; transform: translateY(-1px); }
  .btn-add-bot { background: #e74c3c; color: #fff; }
  .del-btn {
-   background: #c0392b;
+   background: rgba(192,57,43,0.85);
    color: #fff;
-   border: none;
-   padding: 4px 10px;
-   border-radius: 4px;
+   border: 1px solid rgba(255,255,255,0.2);
+   padding: 5px 12px;
+   border-radius: 6px;
    cursor: pointer;
    font-size: 12px;
    font-weight: 600;
+   transition: background 0.2s;
  }
- .del-btn:hover { opacity: 0.8; }
+ .del-btn:hover { background: #c0392b; }
  .admin-hint {
-   font-size: 12px;
-   color: #888;
-   margin-top: 8px;
+   font-size: 13px;
+   color: rgba(255,255,255,0.5);
+   margin-top: 10px;
  }
+ .admin-login-row {
+   text-align: center;
+   margin-top: 20px;
+ }
+ .admin-login-row input {
+   padding: 10px 16px;
+   border: 1px solid rgba(255,255,255,0.2);
+   border-radius: 8px;
+   background: rgba(0,0,0,0.35);
+   color: #fff;
+   font-size: 14px;
+   width: 200px;
+ }
+ .admin-login-row input::placeholder { color: rgba(255,255,255,0.4); }
  .joined-msg {
    text-align: center;
    color: #4a9eff;
+   font-weight: 700;
+   font-size: 18px;
+   margin-bottom: 25px;
+   text-shadow: 0 0 10px rgba(74,158,255,0.5);
+ }
+ .guest-warning {
+   text-align: center;
+   color: #e74c3c;
    font-weight: 600;
+   font-size: 15px;
    margin-bottom: 20px;
+   text-shadow: 0 0 8px rgba(231,76,60,0.4);
  }
 </style>
 </head>
@@ -194,17 +227,14 @@
     <img src="https://4ak4ak.moy.su/kolo13.jpg" alt="Турнир">
   </div>
 
-  <div class="login-section" id="loginSection">
-    <input type="text" id="userNick" placeholder="Введите ваш ник" maxlength="20">
-    <button class="btn-join" onclick="joinTournament()">Участвовать</button>
-  </div>
+  <div id="joinSection" class="join-section"></div>
 
   <table class="participants-table">
     <thead>
       <tr>
         <th>№</th>
         <th>Участник</th>
-        <th style="width:80px;">Действие</th>
+        <th style="width:90px;">Действие</th>
       </tr>
     </thead>
     <tbody id="participantsBody">
@@ -221,9 +251,9 @@
     <div class="admin-hint">Чтобы удалить участника — нажми «Удалить» в строке таблицы.</div>
   </div>
 
-  <div style="text-align:center; margin-top:15px;">
-    <input type="password" id="adminPassInput" placeholder="Админ-пароль" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.2); border-radius:6px; background:rgba(0,0,0,0.3); color:#fff; font-size:14px; width:180px;" onkeydown="if(event.key==='Enter') toggleAdmin()">
-    <button class="btn-join" style="padding:10px 20px; font-size:14px;" onclick="toggleAdmin()">Войти как админ</button>
+  <div class="admin-login-row">
+    <input type="password" id="adminPassInput" placeholder="Админ-пароль" onkeydown="if(event.key==='Enter') toggleAdmin()">
+    <button class="btn-join" style="padding:10px 24px; font-size:14px;" onclick="toggleAdmin()">Войти как админ</button>
   </div>
 </div>
 
@@ -246,9 +276,27 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const participantsRef = db.ref('tournament/participants');
 
-const ADMIN_PASSWORD = '12$sacreD';
+const ADMIN_PASSWORD = '12$sacreD!';
 let isAdmin = false;
 let myId = null;
+let myNick = null;
+
+// Получаем ник из URL (?user=НИК)
+function getUrlParam(name) {
+  var url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
+
+myNick = getUrlParam('user');
+
+(function initJoinSection() {
+  var section = document.getElementById('joinSection');
+  if (myNick && myNick !== 'null' && myNick !== '') {
+    section.innerHTML = '<button class="btn-join" onclick="joinTournament()">Участвовать</button>';
+  } else {
+    section.innerHTML = '<p class="guest-warning">Войдите на сайт, чтобы участвовать в турнире</p>';
+  }
+})();
 
 participantsRef.on('value', function(snapshot) {
   const data = snapshot.val() || {};
@@ -262,6 +310,22 @@ participantsRef.on('value', function(snapshot) {
     tbody.innerHTML = '<tr><td colspan="3" class="no-participants">Пока нет участников. Будь первым!</td></tr>';
     document.getElementById('adminPanel').style.display = isAdmin ? 'block' : 'none';
     return;
+  }
+
+  // Проверяем, участвует ли уже текущий юзер
+  let alreadyJoined = false;
+  if (myNick) {
+    alreadyJoined = entries.some(function(e) {
+      return e[1].name && e[1].name.toLowerCase() === myNick.toLowerCase();
+    });
+  }
+  if (alreadyJoined) {
+    var myEntry = entries.find(function(e) {
+      return e[1].name && e[1].name.toLowerCase() === myNick.toLowerCase();
+    });
+    var myNum = entries.indexOf(myEntry) + 1;
+    var joinSec = document.getElementById('joinSection');
+    joinSec.innerHTML = '<p class="joined-msg">Ты в игре! Твой номер: ' + myNum + '</p>';
   }
 
   let html = '';
@@ -285,9 +349,8 @@ participantsRef.on('value', function(snapshot) {
 });
 
 function joinTournament() {
-  const nick = document.getElementById('userNick').value.trim();
-  if (!nick) {
-    alert('Введите ник!');
+  if (!myNick) {
+    alert('Войдите на сайт, чтобы участвовать!');
     return;
   }
 
@@ -299,25 +362,24 @@ function joinTournament() {
       : 0;
 
     const exists = entries.some(function(e) {
-      return e.name.toLowerCase() === nick.toLowerCase();
+      return e.name && e.name.toLowerCase() === myNick.toLowerCase();
     });
     if (exists) {
-      alert('Этот ник уже в таблице!');
+      alert('Ты уже в таблице!');
       return;
     }
 
     const newRef = participantsRef.push();
     myId = newRef.key;
     newRef.set({
-      name: nick,
+      name: myNick,
       isBot: false,
       order: maxOrder + 1,
       joinedAt: Date.now()
     });
 
-    document.getElementById('userNick').value = '';
-    document.getElementById('loginSection').innerHTML =
-      '<p class="joined-msg">Ты в игре! Номер в таблице: ' + (maxOrder + 1) + '</p>';
+    document.getElementById('joinSection').innerHTML =
+      '<p class="joined-msg">Ты в игре! Твой номер: ' + (maxOrder + 1) + '</p>';
   });
 }
 
