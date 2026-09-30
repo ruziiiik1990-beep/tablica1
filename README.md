@@ -276,7 +276,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const participantsRef = db.ref('tournament/participants');
 
-const ADMIN_PASSWORD = '12$sacreD!';
+const ADMIN_PASSWORD = '12$sacreD';
 let isAdmin = false;
 let myId = null;
 let myNick = null;
