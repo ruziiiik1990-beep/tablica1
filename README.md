@@ -1,4 +1,3 @@
-
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -90,12 +89,18 @@
    transition: background 0.2s;
  }
  .row-number {
-   font-weight: 800;
-   color: #4a9eff;
    width: 60px;
-   font-size: 17px;
-   text-shadow: 0 0 8px rgba(74,158,255,0.6);
    text-align: center;
+ }
+ .number-highlight {
+   font-weight: 800;
+   background: linear-gradient(180deg, transparent 45%, #0a2a6bcc 45%);
+   padding: 3px 8px;
+   border-radius: 5px;
+   color: #fff;
+   text-shadow: 0 0 5px #0a2a6b, 0 0 10px #0a2a6b;
+   display: inline-block;
+   font-size: 17px;
  }
  .nick-highlight {
    font-weight: 800;
@@ -221,11 +226,17 @@
  }
  .guest-warning {
    text-align: center;
-   color: #e74c3c;
-   font-weight: 600;
-   font-size: 15px;
    margin-bottom: 20px;
-   text-shadow: 0 0 8px rgba(231,76,60,0.4);
+ }
+ .guest-warning-text {
+   font-weight: 800;
+   background: linear-gradient(180deg, transparent 45%, #0a2a6bcc 45%);
+   padding: 3px 10px;
+   border-radius: 5px;
+   color: #fff;
+   text-shadow: 0 0 5px #0a2a6b, 0 0 10px #0a2a6b;
+   display: inline-block;
+   font-size: 15px;
  }
  .admin-active-badge {
    display: inline-block;
@@ -293,7 +304,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const participantsRef = db.ref('tournament/participants');
 
-const ADMIN_PASSWORD = '12$sacreD!';
+const ADMIN_PASSWORD = '12$sacreD';
 let isAdmin = false;
 let myNick = null;
 
@@ -309,7 +320,7 @@ myNick = getUrlParam('user');
   if (myNick && myNick !== 'null' && myNick !== '') {
     section.innerHTML = '<button class="btn-join" onclick="joinTournament()">Участвовать</button>';
   } else {
-    section.innerHTML = '<p class="guest-warning">Войдите на сайт, чтобы участвовать в турнире</p>';
+    section.innerHTML = '<p class="guest-warning"><span class="guest-warning-text">Войдите на сайт, чтобы участвовать в турнире</span></p>';
   }
 })();
 
@@ -337,12 +348,7 @@ function renderTable(snapshot) {
       });
       var myNum = entries.indexOf(myEntry) + 1;
       var joinSec = document.getElementById('joinSection');
-      // Сохраняем админ-панель если активна
-      if (!isAdmin) {
-        joinSec.innerHTML = '<p class="joined-msg">Ты в игре! Твой номер: ' + myNum + '</p>';
-      } else {
-        joinSec.innerHTML = '<p class="joined-msg">Ты в игре! Твой номер: ' + myNum + '</p>';
-      }
+      joinSec.innerHTML = '<p class="joined-msg">Ты в игре! Твой номер: ' + myNum + '</p>';
     }
   }
 
@@ -356,7 +362,7 @@ function renderTable(snapshot) {
       ? '<button class="del-btn" onclick="removeParticipant(\'' + id + '\')">Удалить</button>'
       : '';
     html += '<tr>'
-      + '<td class="row-number">' + num + ')</td>'
+      + '<td class="row-number"><span class="number-highlight">' + num + ')</span></td>'
       + '<td><span class="nick-highlight">' + escapeHtml(p.name) + '</span>' + (isBot ? '<span class="bot-badge">БОТ</span>' : '') + '</td>'
       + '<td>' + delBtn + '</td>'
       + '</tr>';
@@ -396,8 +402,6 @@ function joinTournament() {
       order: maxOrder + 1,
       joinedAt: Date.now()
     });
-
-    // Не перезаписываем joinSection — это сделает renderTable автоматически
   });
 }
 
@@ -441,7 +445,6 @@ function toggleAdmin() {
       document.getElementById('adminPassInput').value = '';
       document.getElementById('adminPanel').style.display = 'block';
       alert('Админ-режим включён!');
-      // Перезапускаем рендер, чтобы появились кнопки удаления
       participantsRef.once('value').then(renderTable);
     } else {
       alert('Неверный пароль!');
