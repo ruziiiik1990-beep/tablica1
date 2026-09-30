@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -20,7 +20,7 @@
    min-height: 100vh;
  }
  .tournament-wrapper {
-   max-width: 800px;
+   max-width: 850px;
    margin: 0 auto;
  }
  .join-section {
@@ -29,7 +29,7 @@
  }
  .btn-join {
    display: inline-block;
-   padding: 16px 40px;
+   padding: 16px 44px;
    font-size: 18px;
    font-weight: 700;
    color: #fff;
@@ -54,27 +54,28 @@
    width: 100%;
    border-collapse: separate;
    border-spacing: 0;
-   background: rgba(10,20,50,0.55);
-   backdrop-filter: blur(8px);
-   -webkit-backdrop-filter: blur(8px);
-   border-radius: 12px;
+   background: rgba(10,20,50,0.6);
+   backdrop-filter: blur(10px);
+   -webkit-backdrop-filter: blur(10px);
+   border-radius: 14px;
    overflow: hidden;
-   border: 1px solid rgba(255,255,255,0.15);
-   box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+   border: 1px solid rgba(74,158,255,0.25);
+   box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
  }
  .participants-table th {
-   background: rgba(10,42,107,0.85);
+   background: linear-gradient(135deg, #0a2a6b, #1a4a8b);
    color: #fff;
-   padding: 14px;
+   padding: 16px 18px;
    text-align: left;
-   font-weight: 700;
+   font-weight: 800;
    font-size: 15px;
-   text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-   border-bottom: 2px solid rgba(74,158,255,0.4);
+   text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+   border-bottom: 2px solid rgba(74,158,255,0.5);
+   letter-spacing: 0.5px;
  }
  .participants-table td {
-   padding: 12px 14px;
-   border-bottom: 1px solid rgba(255,255,255,0.08);
+   padding: 14px 18px;
+   border-bottom: 1px solid rgba(255,255,255,0.07);
    font-size: 15px;
    color: #fff;
  }
@@ -84,65 +85,84 @@
  .participants-table tr:nth-child(even) td {
    background: rgba(255,255,255,0.04);
  }
+ .participants-table tr:hover td {
+   background: rgba(74,158,255,0.08);
+   transition: background 0.2s;
+ }
  .row-number {
    font-weight: 800;
    color: #4a9eff;
    width: 60px;
-   font-size: 16px;
-   text-shadow: 0 0 6px rgba(74,158,255,0.5);
+   font-size: 17px;
+   text-shadow: 0 0 8px rgba(74,158,255,0.6);
+   text-align: center;
+ }
+ .nick-highlight {
+   font-weight: 800;
+   background: linear-gradient(180deg, transparent 45%, #0a2a6bcc 45%);
+   padding: 3px 8px;
+   border-radius: 5px;
+   color: #fff;
+   text-shadow: 0 0 5px #0a2a6b, 0 0 10px #0a2a6b;
+   display: inline-block;
  }
  .bot-badge {
    display: inline-block;
-   background: #e74c3c;
+   background: linear-gradient(135deg, #e74c3c, #c0392b);
    color: #fff;
    font-size: 11px;
-   padding: 2px 8px;
-   border-radius: 4px;
+   padding: 3px 10px;
+   border-radius: 6px;
    margin-left: 8px;
-   font-weight: 600;
-   box-shadow: 0 2px 6px rgba(231,76,60,0.4);
+   font-weight: 700;
+   box-shadow: 0 2px 8px rgba(231,76,60,0.5);
+   text-transform: uppercase;
+   letter-spacing: 0.5px;
  }
  .no-participants {
    text-align: center;
-   padding: 35px;
+   padding: 40px;
    color: rgba(255,255,255,0.6);
    font-size: 16px;
    font-style: italic;
  }
  .admin-panel {
    margin-top: 25px;
-   padding: 22px;
-   background: rgba(10,42,107,0.25);
-   backdrop-filter: blur(6px);
-   -webkit-backdrop-filter: blur(6px);
-   border: 1px solid rgba(74,158,255,0.3);
-   border-radius: 12px;
+   padding: 24px;
+   background: rgba(10,42,107,0.3);
+   backdrop-filter: blur(8px);
+   -webkit-backdrop-filter: blur(8px);
+   border: 1px solid rgba(74,158,255,0.35);
+   border-radius: 14px;
+   box-shadow: 0 4px 20px rgba(10,42,107,0.3);
  }
  .admin-panel h3 {
-   font-size: 17px;
-   margin-bottom: 15px;
+   font-size: 18px;
+   margin-bottom: 16px;
    color: #4a9eff;
-   text-shadow: 0 0 8px rgba(74,158,255,0.4);
+   text-shadow: 0 0 10px rgba(74,158,255,0.5);
+   font-weight: 700;
  }
  .admin-row {
    display: flex;
    gap: 10px;
    margin-bottom: 12px;
    flex-wrap: wrap;
+   align-items: center;
  }
  .admin-row input {
    flex: 1;
    min-width: 150px;
-   padding: 11px;
+   padding: 12px 14px;
    border: 1px solid rgba(255,255,255,0.2);
    border-radius: 8px;
-   background: rgba(0,0,0,0.35);
+   background: rgba(0,0,0,0.4);
    color: #fff;
    font-size: 14px;
  }
  .admin-row input::placeholder { color: rgba(255,255,255,0.4); }
  .btn-admin {
-   padding: 11px 20px;
+   padding: 12px 22px;
    border: none;
    border-radius: 8px;
    font-weight: 600;
@@ -151,19 +171,23 @@
    transition: opacity 0.2s, transform 0.2s;
  }
  .btn-admin:hover { opacity: 0.85; transform: translateY(-1px); }
- .btn-add-bot { background: #e74c3c; color: #fff; }
+ .btn-add-bot {
+   background: linear-gradient(135deg, #e74c3c, #c0392b);
+   color: #fff;
+   box-shadow: 0 3px 10px rgba(231,76,60,0.4);
+ }
  .del-btn {
    background: rgba(192,57,43,0.85);
    color: #fff;
    border: 1px solid rgba(255,255,255,0.2);
-   padding: 5px 12px;
+   padding: 6px 14px;
    border-radius: 6px;
    cursor: pointer;
    font-size: 12px;
    font-weight: 600;
-   transition: background 0.2s;
+   transition: background 0.2s, transform 0.2s;
  }
- .del-btn:hover { background: #c0392b; }
+ .del-btn:hover { background: #c0392b; transform: scale(1.05); }
  .admin-hint {
    font-size: 13px;
    color: rgba(255,255,255,0.5);
@@ -172,12 +196,16 @@
  .admin-login-row {
    text-align: center;
    margin-top: 20px;
+   display: flex;
+   justify-content: center;
+   gap: 10px;
+   flex-wrap: wrap;
  }
  .admin-login-row input {
-   padding: 10px 16px;
+   padding: 12px 18px;
    border: 1px solid rgba(255,255,255,0.2);
    border-radius: 8px;
-   background: rgba(0,0,0,0.35);
+   background: rgba(0,0,0,0.4);
    color: #fff;
    font-size: 14px;
    width: 200px;
@@ -199,6 +227,17 @@
    margin-bottom: 20px;
    text-shadow: 0 0 8px rgba(231,76,60,0.4);
  }
+ .admin-active-badge {
+   display: inline-block;
+   background: linear-gradient(135deg, #27ae60, #2ecc71);
+   color: #fff;
+   font-size: 12px;
+   padding: 4px 12px;
+   border-radius: 20px;
+   font-weight: 700;
+   margin-left: 10px;
+   box-shadow: 0 2px 8px rgba(39,174,96,0.4);
+ }
 </style>
 </head>
 <body>
@@ -210,7 +249,7 @@
   <table class="participants-table">
     <thead>
       <tr>
-        <th>№</th>
+        <th style="text-align:center;">№</th>
         <th>Участник</th>
         <th style="width:90px;">Действие</th>
       </tr>
@@ -220,18 +259,18 @@
     </tbody>
   </table>
 
+  <div class="admin-login-row">
+    <input type="password" id="adminPassInput" placeholder="Админ-пароль" onkeydown="if(event.key==='Enter') toggleAdmin()">
+    <button class="btn-join" style="padding:12px 26px; font-size:14px;" onclick="toggleAdmin()">Войти как админ</button>
+  </div>
+
   <div class="admin-panel" id="adminPanel" style="display:none;">
-    <h3>Админ-панель</h3>
+    <h3>Админ-панель <span class="admin-active-badge" id="adminBadge">АКТИВЕН</span></h3>
     <div class="admin-row">
-      <input type="text" id="botName" placeholder="Имя бота" maxlength="20">
+      <input type="text" id="botName" placeholder="Имя бота" maxlength="20" onkeydown="if(event.key==='Enter') addBot()">
       <button class="btn-admin btn-add-bot" onclick="addBot()">Добавить бота</button>
     </div>
     <div class="admin-hint">Чтобы удалить участника — нажми «Удалить» в строке таблицы.</div>
-  </div>
-
-  <div class="admin-login-row">
-    <input type="password" id="adminPassInput" placeholder="Админ-пароль" onkeydown="if(event.key==='Enter') toggleAdmin()">
-    <button class="btn-join" style="padding:10px 24px; font-size:14px;" onclick="toggleAdmin()">Войти как админ</button>
   </div>
 </div>
 
@@ -256,7 +295,6 @@ const participantsRef = db.ref('tournament/participants');
 
 const ADMIN_PASSWORD = '12$sacreD!';
 let isAdmin = false;
-let myId = null;
 let myNick = null;
 
 function getUrlParam(name) {
@@ -275,7 +313,7 @@ myNick = getUrlParam('user');
   }
 })();
 
-participantsRef.on('value', function(snapshot) {
+function renderTable(snapshot) {
   const data = snapshot.val() || {};
   const entries = Object.entries(data).sort(function(a, b) {
     return (a[1].order || 0) - (b[1].order || 0);
@@ -285,23 +323,27 @@ participantsRef.on('value', function(snapshot) {
 
   if (entries.length === 0) {
     tbody.innerHTML = '<tr><td colspan="3" class="no-participants">Пока нет участников. Будь первым!</td></tr>';
-    document.getElementById('adminPanel').style.display = isAdmin ? 'block' : 'none';
     return;
   }
 
-  let alreadyJoined = false;
+  // Обновляем секцию участия
   if (myNick) {
-    alreadyJoined = entries.some(function(e) {
+    let alreadyJoined = entries.some(function(e) {
       return e[1].name && e[1].name.toLowerCase() === myNick.toLowerCase();
     });
-  }
-  if (alreadyJoined) {
-    var myEntry = entries.find(function(e) {
-      return e[1].name && e[1].name.toLowerCase() === myNick.toLowerCase();
-    });
-    var myNum = entries.indexOf(myEntry) + 1;
-    var joinSec = document.getElementById('joinSection');
-    joinSec.innerHTML = '<p class="joined-msg">Ты в игре! Твой номер: ' + myNum + '</p>';
+    if (alreadyJoined) {
+      var myEntry = entries.find(function(e) {
+        return e[1].name && e[1].name.toLowerCase() === myNick.toLowerCase();
+      });
+      var myNum = entries.indexOf(myEntry) + 1;
+      var joinSec = document.getElementById('joinSection');
+      // Сохраняем админ-панель если активна
+      if (!isAdmin) {
+        joinSec.innerHTML = '<p class="joined-msg">Ты в игре! Твой номер: ' + myNum + '</p>';
+      } else {
+        joinSec.innerHTML = '<p class="joined-msg">Ты в игре! Твой номер: ' + myNum + '</p>';
+      }
+    }
   }
 
   let html = '';
@@ -315,14 +357,16 @@ participantsRef.on('value', function(snapshot) {
       : '';
     html += '<tr>'
       + '<td class="row-number">' + num + ')</td>'
-      + '<td>' + escapeHtml(p.name) + (isBot ? '<span class="bot-badge">БОТ</span>' : '') + '</td>'
+      + '<td><span class="nick-highlight">' + escapeHtml(p.name) + '</span>' + (isBot ? '<span class="bot-badge">БОТ</span>' : '') + '</td>'
       + '<td>' + delBtn + '</td>'
       + '</tr>';
   });
   tbody.innerHTML = html;
 
   document.getElementById('adminPanel').style.display = isAdmin ? 'block' : 'none';
-});
+}
+
+participantsRef.on('value', renderTable);
 
 function joinTournament() {
   if (!myNick) {
@@ -346,7 +390,6 @@ function joinTournament() {
     }
 
     const newRef = participantsRef.push();
-    myId = newRef.key;
     newRef.set({
       name: myNick,
       isBot: false,
@@ -354,8 +397,7 @@ function joinTournament() {
       joinedAt: Date.now()
     });
 
-    document.getElementById('joinSection').innerHTML =
-      '<p class="joined-msg">Ты в игре! Твой номер: ' + (maxOrder + 1) + '</p>';
+    // Не перезаписываем joinSection — это сделает renderTable автоматически
   });
 }
 
@@ -397,13 +439,18 @@ function toggleAdmin() {
     if (pass === ADMIN_PASSWORD) {
       isAdmin = true;
       document.getElementById('adminPassInput').value = '';
+      document.getElementById('adminPanel').style.display = 'block';
       alert('Админ-режим включён!');
+      // Перезапускаем рендер, чтобы появились кнопки удаления
+      participantsRef.once('value').then(renderTable);
     } else {
       alert('Неверный пароль!');
     }
   } else {
     isAdmin = false;
+    document.getElementById('adminPanel').style.display = 'none';
     alert('Админ-режим выключен.');
+    participantsRef.once('value').then(renderTable);
   }
 }
 
