@@ -1,237 +1,249 @@
-<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Таблица Рейтинга</title>
-    <!-- Библиотека Anime.js для перемещения строк -->
-    <script src="https://cloudflare.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Турнирная Таблица ЧакЧак — Фикс Фона Ячеек</title>
     <style>
-        /* Полное уничтожение любых линий, разделителей и фонового мусора вне таблицы */
-        hr, border, .separator, ::before, ::after {
-            display: none !important;
-            border: none !important;
-            height: 0 !important;
-            opacity: 0 !important;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background-color: #374151; 
-            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; 
-            color: #fff; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            perspective: 1000px; 
-        }
-
-        /* Контейнер-обертка для 3D наклона */
-        .table-wrapper-3d { 
-            width: 100%; 
-            max-width: 650px; 
-            transition: transform 0.1s ease-out; 
-            transform-style: preserve-3d; 
-            cursor: pointer;
-            border-top: none !important;
-        }
-
-        .table-container { 
-            width: 100%; 
-            background: #465a8a; 
-            border-radius: 16px; 
-            padding: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
-            box-sizing: border-box; 
-        }
-
-        /* Шапка таблицы */
-        .table-header { 
-            display: grid; 
-            grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr; 
-            text-align: center; 
-            font-weight: bold; 
-            font-size: 13px; 
-            text-transform: uppercase; 
-            padding: 12px 10px; 
-            border: 1px solid rgba(255,255,255,0.3); 
-            border-bottom: 2px solid rgba(255,255,255,0.4); 
-            background: rgba(255,255,255,0.05); 
-            border-top-left-radius: 8px; 
-            border-top-right-radius: 8px; 
-            transform: translateZ(30px); 
-        }
-
-        .leaderboard-list { 
-            position: relative; 
-            height: 315px; 
-            margin: 0; 
-            padding: 0; 
-            list-style: none; 
-            background: rgba(255,255,255,0.02); 
-            border: 1px solid rgba(255,255,255,0.3); 
-            border-top: none; 
-            border-bottom-left-radius: 8px; 
-            border-bottom-right-radius: 8px; 
             overflow: hidden; 
-            transform: translateZ(20px); 
+            background: #13151c; 
+            width: 100vw; 
+            height: 100vh; 
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px; /* Включаем 3D-пространство для эффектов */
+        }
+        
+        /* ИНТЕРАКТИВНЫЙ 3D-КОНТЕЙНЕР ТАБЛИЦЫ */
+        .card {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            /* ИСПРАВЛЕНО: Задали карточке тот же самый темный цвет */
+            background: #13151c !important; 
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease, border-color 0.5s ease;
         }
 
-        /* Строка игрока */
-        .player-row { 
-            position: absolute; 
-            left: 0; 
-            top: 0; 
+        /* ОБЁРТКА ДЛЯ НЕОНОВЫХ ЭФФЕКТОВ */
+        .wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            pointer-events: none;
+            transform-style: preserve-3d;
+        }
+
+        /* Псевдоэлементы neoнового свечения (Изначально скрыты) */
+        .wrapper::before, .wrapper::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) translateZ(-1px);
+            width: 80%;
+            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+            filter: blur(20px);
+            opacity: 0;
+            transition: opacity 0.5s ease, height 0.5s ease;
+        }
+
+        .wrapper::before { top: -5px; height: 5px; }
+        .wrapper::after { bottom: -5px; height: 5px; }
+
+        /* Зажигаем неон при наведении */
+        .card:hover .wrapper::before, 
+        .card:hover .wrapper::after { 
+            opacity: 1; 
+        } 
+
+        /* Вытягиваем нижний неон до 120px */
+        .card:hover .wrapper::after { 
+            height: 120px; 
+            background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.4));
+        }
+
+        .card:hover {
+            border-color: rgba(59, 130, 246, 0.6);
+        }
+
+        /* Контент с плавной 3D-трансформацией */
+        .title { 
             width: 100%; 
-            height: 45px; 
-            display: grid; 
-            grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr; 
-            align-items: center; 
-            text-align: center; 
-            box-sizing: border-box; 
-            border-bottom: 1px solid rgba(255,255,255,0.2); 
-            font-size: 14px; 
-            background: #465a8a; 
-            will-change: transform; 
-            transform-style: preserve-3d; 
+            transition: transform 0.5s ease;
+            transform: translate3d(0%, 0px, 0px);
         }
 
-        .col-rank { color: #9ca3af; font-weight: bold; transform: translateZ(15px); transition: color 0.3s; }
-        .col-name { font-weight: bold; transform: translateZ(25px); }
-        
-        /* Стили для топ-3 мест */
-        .rank-gold { color: #ffd700 !important; text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
-        .rank-silver { color: #c0c0c0 !important; text-shadow: 0 0 8px rgba(192, 192, 192, 0.4); }
-        .rank-bronze { color: #cd7f32 !important; text-shadow: 0 0 8px rgba(205, 127, 50, 0.4); }
+        /* Выталкиваем контент вперед по оси Z и вверх */
+        .card:hover .title { 
+            transform: translate3d(0%, -50px, 100px); 
+        }
 
-        /* Цвета ников */
-        .player-row[data-name="45"] .col-name { color: #f59e0b; }
-        .player-row[data-name="qweqwe"] .col-name { color: #ed8936; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            color: #ffffff;
+            /* ИСПРАВЛЕНО: Жестко закрасили саму таблицу в цвет заднего плана */
+            background: #13151c !important; 
+        }
+
+        th {
+            font-size: 13px;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            padding-bottom: 15px;
+            text-transform: uppercase;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            /* ИСПРАВЛЕНО: Установили цвет для шапки */
+            background: #13151c !important;
+        }
+
+        td {
+            padding: 12px 5px;
+            font-size: 15px;
+            font-weight: 500;
+            /* ИСПРАВЛЕНО: Каждая ячейка теперь имеет принудительный темный цвет */
+            background: #13151c !important; 
+        }
+
+        tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            /* ИСПРАВЛЕНО: Каждая строка имеет принудительный темный цвет */
+            background: #13151c !important; 
+        }
+
+        /* Цвета игроков и очков */
+        .rank { color: #94a3b8; font-weight: bold; }
+        .gold { color: #facc15; text-shadow: 0 0 8px rgba(250, 204, 21, 0.3); }
+        .orange { color: #f97316; }
         
-        .col-champ, .col-finalist { color: #ed8936; font-weight: bold; transform: translateZ(15px); }
+        .chak-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: #facc15;
+            vertical-align: middle;
+            background: #13151c !important;
+        }
         
-        /* Чак-чак с белой подложкой */
-        .col-chak { display: flex; align-items: center; justify-content: center; gap: 6px; color: #eab308; font-weight: bold; font-size: 16px; transform: translateZ(35px); }
-        .chak-icon { width: 20px; height: 20px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 1px; }
-        
-        .table-footer-text { text-align: center; font-size: 11px; color: #9ca3af; margin-top: 15px; transform: translateZ(10px); }
+        .chak-img {
+            width: 16px;
+            height: 16px;
+            object-fit: cover;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .footer-text {
+            text-align: center;
+            font-size: 12px;
+            color: #576575;
+            margin-top: 20px;
+            letter-spacing: 0.5px;
+            background: #13151c !important;
+        }
     </style>
 </head>
 <body>
 
-<div class="table-wrapper-3d" id="card3d">
-    <div class="table-container">
-        <div class="table-header">
-            <div>#</div><div>Игрок</div><div>Чемпион</div><div>Финалист</div><div>Чак-Чак</div>
-        </div>
-        <ul class="leaderboard-list" id="leaderboard"></ul>
-        <div class="table-footer-text">Победитель финала +2 чак-чака • Финалист +1 чак-чака</div>
+<!-- Интерактивная 3D Карточка турнирной таблицы -->
+<div class="card" id="tableCard">
+    <div class="wrapper"></div>
+    
+    <!-- Весь контент таблицы, реагирующий на 3D Hover -->
+    <div class="title">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 10%;">#</th>
+                    <th style="width: 30%;">ИГРОК</th>
+                    <th style="width: 20%;">ЧЕМПИОН</th>
+                    <th style="width: 20%;">ФИНАЛИСТ</th>
+                    <th style="width: 20%;">ЧАК-ЧАК</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="rank">1</td>
+                    <td class="gold">X-Slayer_99</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                </tr>
+                <tr>
+                    <td class="rank">2</td>
+                    <td>Neon_Viper</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                </tr>
+                <tr>
+                    <td class="rank">3</td>
+                    <td class="orange">Chak_Master</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                </tr>
+                <tr>
+                    <td class="rank">4</td>
+                    <td>Cyber_Glitch</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                </tr>
+                <tr>
+                    <td class="rank">5</td>
+                    <td>Zeus_Awper</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                </tr>
+                <tr>
+                    <td class="rank">6</td>
+                    <td>Shadow_Step</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                </tr>
+                <tr>
+                    <td class="rank">7</td>
+                    <td>Bullet_Rain</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="footer-text">Победитель финала +2 чак-чака · Финалист +1 чак-чак</div>
     </div>
 </div>
 
 <script>
-    const namesPool = ["Безумный Макс", "Ночной Призрак", "Стальной Лис", "Гроза Арены", "Тайный Нео", "Cyber_Chak", "45", "qweqwe", "123", "hhh", "fg"];
-    
-    function generatePlayers() {
-        const shuffled = [...namesPool].sort(() => 0.5 - Math.random());
-        return Array.from({length: 7}, (_, i) => ({ id: i + 1, name: shuffled[i], champ: 0, finalist: 0, chak: 0 }));
-    }
+    const card = document.getElementById('tableCard');
 
-    let players = generatePlayers();
-    const ROW_HEIGHT = 45;
-    const logoUrl = "https://moy.su";
-
-    // Функция авто-удаления текстового мусора и внешних полос хостинга
-    function cleanExternalLayout() {
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-        let node;
-        while (node = walker.nextNode()) {
-            const val = node.nodeValue.toLowerCase();
-            if (val.includes('tablica1') || val.includes('doctype')) {
-                const parent = node.parentElement;
-                if (parent && !parent.closest('.table-container') && parent !== document.body) {
-                    parent.style.display = 'none';
-                }
-            }
-        }
-    }
-
-    function initLeaderboard() {
-        const list = document.getElementById('leaderboard');
-        list.innerHTML = '';
-        players.forEach((p, i) => {
-            const li = document.createElement('li');
-            li.className = 'player-row';
-            li.setAttribute('data-id', p.id);
-            li.setAttribute('data-name', p.name);
-            li.style.transform = `translateY(${i * ROW_HEIGHT}px)`;
-            li.innerHTML = `<div class="col-rank rank-num">${i + 1}</div><div class="col-name">${p.name}</div><div class="col-champ" id="champ-${p.id}">${p.champ}</div><div class="col-finalist" id="finalist-${p.id}">${p.finalist}</div><div class="col-chak" id="chak-${p.id}"><span class="chak-value">${p.chak}</span><img src="${logoUrl}" class="chak-icon" alt="*"></div>`;
-            list.appendChild(li);
-        });
-        applyRankColors();
-    }
-
-    function applyRankColors() {
-        const rows = document.querySelectorAll('.player-row');
-        rows.forEach(row => {
-            const rankBox = row.querySelector('.rank-num');
-            const currentRank = parseInt(rankBox.innerText);
-            
-            rankBox.classList.remove('rank-gold', 'rank-silver', 'rank-bronze');
-            
-            if (currentRank === 1) rankBox.classList.add('rank-gold');
-            else if (currentRank === 2) rankBox.classList.add('rank-silver');
-            else if (currentRank === 3) rankBox.classList.add('rank-bronze');
-        });
-    }
-
-    function updatePositions() {
-        const sorted = [...players].sort((a, b) => b.chak - a.chak);
-        sorted.forEach((p, newIndex) => {
-            const row = document.querySelector(`.player-row[data-id="${p.id}"]`);
-            if (row) {
-                row.querySelector('.rank-num').innerText = newIndex + 1;
-                anime({ 
-                    targets: row, 
-                    translateY: newIndex * ROW_HEIGHT, 
-                    duration: 800, 
-                    easing: 'easeInOutCubic',
-                    complete: function() {
-                        applyRankColors();
-                    }
-                });
-            }
-        });
-    }
-
-    function startSimulation() {
-        setInterval(() => {
-            const rIdx = Math.floor(Math.random() * players.length);
-            const isWin = Math.random() > 0.5;
-            const p = players[rIdx];
-
-            if (isWin) { p.chak += 2; p.champ += 1; document.getElementById(`champ-${p.id}`).innerText = p.champ; }
-            else { p.chak += 1; p.finalist += 1; document.getElementById(`finalist-${p.id}`).innerText = p.finalist; }
-
-            const chakEl = document.getElementById(`chak-${p.id}`);
-            if (chakEl) {
-                chakEl.querySelector('.chak-value').innerText = p.chak;
-                anime({ targets: chakEl, scale: [1, 1.25, 1], duration: 300, easing: 'easeOutSine' });
-            }
-            updatePositions();
-        }, 3500);
-    }
-
-    const card = document.getElementById('card3d');
-    card.addEventListener('mousemove', (e) => {
-        const r = card.getBoundingClientRect();
-        const rotateX = ((r.height / 2) - (e.clientY - r.top)) / 10;
-        const rotateY = ((e.clientX - r.left) - (r.width / 2)) / 15;
-        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    window.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth) - 0.5;
+        const y = (e.clientY / window.innerHeight) - 0.5;
+        card.style.transform = `rotateX(${-y * 30}deg) rotateY(${x * 30}deg)`;
     });
-    card.addEventListener('mouseleave', () => card.style.transform = 'rotateX(0deg) rotateY(0deg)');
 
-    document.addEventListener("DOMContentLoaded", () => { initLeaderboard(); cleanExternalLayout(); startSimulation(); });
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+    });
 </script>
+
 </body>
 </html>
