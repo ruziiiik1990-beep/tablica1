@@ -1,94 +1,177 @@
-
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Турнирная Таблица ЧакЧак — 3D Particles</title>
+    <title>Турнирная Таблица ЧакЧак — Полный 3D Hover</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { overflow: hidden; background: #13151c; width: 100vw; height: 100vh; font-family: sans-serif; }
-        canvas.webgl { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        body { 
+            overflow: hidden; 
+            background: #13151c; 
+            width: 100vw; 
+            height: 100vh; 
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
         
-        /* Невидимый интерфейс поверх 3D сцены для кликабельности элементов */
-        .ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; display: flex; justify-content: center; align-items: center; }
-        .admin-trigger { position: absolute; bottom: 30px; width: 100%; max-width: 500px; display: flex; gap: 15px; padding: 0 20px; pointer-events: auto; opacity: 0; transition: opacity 1s ease 1s; }
-        .admin-trigger.show { opacity: 1; }
+        /* Интерактивный 3D-контейнер карточки */
+        .card {
+            position: relative;
+            width: 650px;
+            height: 450px;
+            z-index: 2;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        /* Обёртка для эффектов свечения */
+        .wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            pointer-events: none;
+            transform-style: preserve-3d;
+        }
+
+        /* Псевдоэлементы свечения: изначально скрыты */
+        .wrapper::before, .wrapper::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+            filter: blur(15px);
+            opacity: 0;
+            transition: opacity 0.5s ease, height 0.5s ease;
+        }
+
+        .wrapper::before { top: -5px; height: 5px; }
+        .wrapper::after { bottom: -5px; height: 5px; }
+
+        /* СТРОГО ПО ТВОЕМУ ЗАПРОСУ: При наведении зажигаем неоновые полосы */
+        .card:hover .wrapper::before, 
+        .card:hover .wrapper::after { 
+            opacity: 1; 
+        } 
+
+        /* СТРОГО ПО ТВОЕМУ ЗАПРОСУ: Нижнее свечение вытягивается до 120px */
+        .card:hover .wrapper::after { 
+            height: 120px; 
+            background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.35));
+        }
+
+        /* Заголовок с плавной трансформацией */
+        .title { 
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 100%; 
+            transition: transform 0.5s ease;
+            transform: translate3d(0%, 0px, 0px);
+        }
+
+        /* СТРОГО ПО ТВОЕМУ ЗАПРОСУ: Выталкиваем заголовок по оси Z вперед и вверх */
+        .card:hover .title { 
+            transform: translate3d(0%, -50px, 100px); 
+        }
+
+        canvas.webgl { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 1; 
+            pointer-events: none; 
+        }
+        
+        /* Кнопки админа */
+        .admin-trigger { 
+            position: absolute; 
+            bottom: -60px; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%; 
+            max-width: 500px; 
+            display: flex; 
+            gap: 15px; 
+            padding: 0 20px; 
+            opacity: 0; 
+            transition: opacity 0.5s ease; 
+        }
+        .card:hover .admin-trigger { 
+            opacity: 1; 
+        }
         .input-pass { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px; color: #fff; outline: none; }
         .btn-admin { background: #1d4ed8; color: #fff; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<canvas class="webgl"></canvas>
-<div class="ui-layer">
-    <div class="admin-trigger" id="adminBlock">
-        <input type="text" class="input-pass" placeholder="Админ-пароль">
-        <button class="btn-admin">Войти как админ</button>
+<div class="card" id="tableCard">
+    <div class="wrapper"></div>
+    <div class="title"></div>
+    
+    <div class="admin-trigger">
+        <input type="password" class="input-pass" placeholder="Админ-пароль">
+        <button class="btn-admin">Войти как admin</button>
     </div>
 </div>
 
+<canvas class="webgl"></canvas>
+
+<!-- Подключаем официальный, стабильный Three.js из CDN -->
+<script src="https://cloudflare.com"></script>
+
 <script>
-    // ВСТРОЕННОЕ ЯДРО THREE.JS ДЛЯ ИСКЛЮЧЕНИЯ ОШИБОК И ОБРЫВОВ
-    const threeCode = `(function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(exports):typeof define==='function'&&define.amd?define(['exports'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.THREE={}));})(this,function(exports){'use strict';function Scene(){this.type="Scene";this.children=[];}Scene.prototype={add:function(o){this.children.push(o);},remove:function(o){var idx=this.children.indexOf(o);if(idx!==-1)this.children.splice(idx,1);}};function PerspectiveCamera(){this.type="PerspectiveCamera";this.position={z:6};}PerspectiveCamera.prototype={lookAt:function(){}};function WebGLRenderer(p){var _c=p.canvas;var _ctx=_c.getContext('2d');this.setSize=function(w,h){_c.width=w;_c.height=h;};this.render=function(s,cam){_ctx.clearRect(0,0,_c.width,_c.height);_ctx.fillStyle="#13151c";_ctx.fillRect(0,0,_c.width,_c.height);if(p.blending===2)_ctx.globalCompositeOperation="screen";var cx=_c.width/2,cy=_c.height/2;for(var i=0;i<s.children.length;i++){var obj=s.children[i];if(!obj||!obj.geometry)continue;var pos=obj.geometry.attributes.position.array;var col=obj.geometry.attributes.color.array;for(var j=0;j<pos.length;j+=3){var p=500/(500+pos[j+2]*20);var sx=cx+pos[j]*170*p;var sy=cy+pos[j+1]*170*p;if(sx>=0&&sx<=_c.width&&sy>=0&&sy<=_c.height){_ctx.fillStyle='rgb('+Math.floor(col[j]*255)+','+Math.floor(col[j+1]*255)+','+Math.floor(col[j+2]*255)+')';_ctx.fillRect(sx,sy,2.2*p,2.5*p);}}}_ctx.globalCompositeOperation="source-over";};}function BufferGeometry(){this.attributes={};}BufferGeometry.prototype={setAttribute:function(n,a){this.attributes[n]=a;return this;},dispose:function(){}};function Float32BufferAttribute(a,s){this.array=a;this.itemSize=s;}function PointsMaterial(p){this.size=p.size||1;this.vertexColors=p.vertexColors||true;}function Points(g,m){this.geometry=g;this.material=m;}exports.Scene=Scene;exports.PerspectiveCamera=PerspectiveCamera;exports.WebGLRenderer=WebGLRenderer;exports.BufferGeometry=BufferGeometry;exports.Float32BufferAttribute=Float32BufferAttribute;exports.PointsMaterial=PointsMaterial;exports.Points=Points;exports.AdditiveBlending=2;});`;
-
-    const blob = new Blob([threeCode], { type: 'application/javascript' });
-    const script = document.createElement('script');
-    script.src = URL.createObjectURL(blob);
-    script.onload = () => { initTableParticles(); };
-    document.head.appendChild(script);
-
-    function initTableParticles() {
+    document.addEventListener('DOMContentLoaded', () => {
         const canvas = document.querySelector('canvas.webgl');
         const scene = new THREE.Scene();
         
-        let geometry = null;
-        let material = null;
-        let points = null;
-
-        const parameters = { size: 0.02 };
-        let targetPositions = [];
-        let currentPositions = [];
-        let colors = [];
+        let geometry = null, material = null, points = null;
+        let targetPositions = [], currentPositions = [], colors = [];
 
         const sizes = { width: window.innerWidth, height: window.innerHeight };
-        const camera = new THREE.PerspectiveCamera();
-        const renderer = new THREE.WebGLRenderer({ canvas: canvas, blending: THREE.AdditiveBlending });
+        
+        // Настройка 3D Камеры и Рендерера
+        const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+        camera.position.z = 5.5;
+        
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
         renderer.setSize(sizes.width, sizes.height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // Создаем временный холст для генерации формы таблицы в пиксели
+        // Создаем скрытый холст для сканирования таблицы в пиксели
         const textCanvas = document.createElement('canvas');
         const tCtx = textCanvas.getContext('2d');
-        textCanvas.width = 600;
-        textCanvas.height = 400;
+        textCanvas.width = 600; textCanvas.height = 400;
 
-        // Рисуем сетку и данные из твоего скриншота в виртуальный холст
-        tCtx.fillStyle = '#13151c';
-        tCtx.fillRect(0, 0, 600, 400);
-        
-        tCtx.fillStyle = '#3b82f6';
-        tCtx.font = 'bold 20px sans-serif';
-        tCtx.fillText('ТУРНИРНАЯ ТАБЛИЦА', 190, 35);
+        tCtx.fillStyle = '#13151c'; tCtx.fillRect(0, 0, 600, 400);
+        tCtx.fillStyle = '#3b82f6'; tCtx.font = 'bold 22px sans-serif';
+        tCtx.fillText('ТУРНИРНАЯ ТАБЛИЦА', 185, 45);
 
-        tCtx.fillStyle = '#94a3b8';
-        tCtx.font = '13px sans-serif';
-        tCtx.fillText('#        ИГРОК        ЧЕМПИОН        ФИНАЛИСТ        ЧАК-ЧАК', 40, 80);
+        tCtx.fillStyle = '#94a3b8'; tCtx.font = '13px sans-serif';
+        tCtx.fillText('#        ИГРОК        ЧЕМПИОН        ФИНАЛИСТ        ЧАК-ЧАК', 40, 95);
 
-        // Строки таблицы
         const players = [
-            ['1', '45', '1', '0', '2  🍪'],
-            ['2', '123', '1', '0', '2  🍪'],
-            ['3', 'qweqwe', '1', '0', '2  🍪'],
-            ['4', 'hhh', '1', '0', '2  🍪'],
-            ['5', 'asdxzc3', '1', '0', '2  🍪'],
-            ['6', 'chesalova2013', '1', '0', '2  🍪'],
+            ['1', '45', '1', '0', '2  🍪'], ['2', '123', '1', '0', '2  🍪'],
+            ['3', 'qweqwe', '1', '0', '2  🍪'], ['4', 'hhh', '1', '0', '2  🍪'],
+            ['5', 'asdxzc3', '1', '0', '2  🍪'], ['6', 'chesalova2013', '1', '0', '2  🍪'],
             ['7', 'fg', '1', '0', '2  🍪']
         ];
 
         players.forEach((p, i) => {
-            const y = 130 + i * 35;
-            tCtx.fillStyle = 'rgba(255,255,255,0.1)';
-            tCtx.fillRect(30, y - 20, 540, 1); // Линии строк
-
+            const y = 145 + i * 35;
+            tCtx.fillStyle = 'rgba(255,255,255,0.08)'; tCtx.fillRect(30, y - 20, 540, 1);
             tCtx.fillStyle = '#94a3b8'; tCtx.fillText(p[0], 43, y);
             tCtx.fillStyle = (i===0||i===2) ? '#facc15' : '#ffffff'; tCtx.fillText(p[1], 100, y);
             tCtx.fillStyle = '#f97316'; tCtx.fillText(p[2], 260, y);
@@ -96,33 +179,22 @@
             tCtx.fillStyle = '#facc15'; tCtx.fillText(p[4], 490, y);
         });
 
-        // Сканируем пиксели и превращаем их в светящиеся 3D частицы
+        // Превращаем пиксели в 3D точки
         const imgData = tCtx.getImageData(0, 0, 600, 400).data;
-        const scale = 0.012;
+        const scale = 0.011;
 
         for (let y = 0; y < 400; y += 2) {
             for (let x = 0; x < 600; x += 2) {
                 const idx = (y * 600 + x) * 4;
-                if (imgData[idx] > 30 || imgData[idx+1] > 30 || imgData[idx+2] > 30) {
-                    const tX = (x - 300) * scale;
-                    const tY = -(y - 200) * scale;
-                    const tZ = (Math.random() - 0.5) * 0.1;
-                    targetPositions.push(tX, tY, tZ);
-
-                    // Изначальный взрыв частиц по всему экрану (как лепестки)
-                    currentPositions.push(
-                        (Math.random() - 0.5) * 10,
-                        (Math.random() - 0.5) * 10,
-                        (Math.random() - 0.5) * 10
-                    );
-
-                    // Переносим цвета пикселей
+                if (imgData[idx] > 25 || imgData[idx+1] > 25 || imgData[idx+2] > 25) {
+                    targetPositions.push((x - 300) * scale, -(y - 200) * scale, (Math.random() - 0.5) * 0.05);
+                    currentPositions.push((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 12, (Math.random() - 0.5) * 12);
                     colors.push(imgData[idx]/255, imgData[idx+1]/255, imgData[idx+2]/255);
                 }
             }
         }
 
-        // ТВОЯ КРИТИЧЕСКАЯ ОЧИСТКА И НАСТРОЙКА ВЗРЫВА/СБОРКИ ЧАСТИЦ
+        // ПРИМЕНЯЕМ ТВОЮ ОЧИСТКУ И PointsMaterial СВЕЧЕНИЕ НА 100%
         if (points !== null) {
             geometry.dispose();
             material.dispose();
@@ -133,9 +205,8 @@
         geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(currentPositions), 3));
         geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
-        // Добавляем вертексные цвета и AdadditiveBlending свечение из твоего запроса
         material = new THREE.PointsMaterial({
-            size: parameters.size,
+            size: 0.02,
             sizeAttenuation: true,
             depthWrite: false,
             blending: THREE.AdditiveBlending,
@@ -145,26 +216,47 @@
         points = new THREE.Points(geometry, material);
         scene.add(points);
 
-        // Показываем форму ввода админа после сборки
-        document.getElementById('adminBlock').classList.add('show');
+        // Интерактивный наклон за курсором мыши
+        const card = document.getElementById('tableCard');
+        let tRotX = 0, tRotY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) - 0.5;
+            const y = (e.clientY / window.innerHeight) - 0.5;
+            tRotY = x * 0.4;
+            tRotX = -y * 0.4;
+            card.style.transform = `rotateX(${tRotX * 45}deg) rotateY(${tRotY * 45}deg)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            tRotX = 0; tRotY = 0;
+            card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+        });
 
         window.addEventListener('resize', () => {
             sizes.width = window.innerWidth; sizes.height = window.innerHeight;
+            camera.aspect = sizes.width / sizes.height;
+            camera.updateProjectionMatrix();
             renderer.setSize(sizes.width, sizes.height);
         });
 
-        // Анимация плавной сборки частиц из хаоса в ровную таблицу
+        // Рендер-цикл сборки частиц
         const tick = () => {
             const posArray = points.geometry.attributes.position.array;
             for (let i = 0; i < posArray.length; i++) {
-                // Плавное притяжение каждой точки на своё место в таблице
-                posArray[i] += (targetPositions[i] - posArray[i]) * 0.04;
+                posArray[i] += (targetPositions[i] - posArray[i]) * 0.05;
             }
+            points.geometry.attributes.position.needsUpdate = true;
+            
+            // Вращаем 3D частицы вслед за карточкой
+            points.rotation.y += (tRotY - points.rotation.y) * 0.1;
+            points.rotation.x += (tRotX - points.rotation.x) * 0.1;
+
             renderer.render(scene, camera);
             window.requestAnimationFrame(tick);
         };
         tick();
-    }
+    });
 </script>
 
 </body>
