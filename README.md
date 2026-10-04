@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -149,6 +150,7 @@
 </div>
 
 <script>
+    // Все игроки начинают строго с 0 очков во всех колонках
     let players = [
         { id: 1, name: "45", champ: 0, finalist: 0, chak: 0 },
         { id: 2, name: "123", champ: 0, finalist: 0, chak: 0 },
@@ -160,9 +162,8 @@
     ];
 
     const ROW_HEIGHT = 45; 
-    const logoUrl = "https://moy.su";
+    const logoUrl = "https://4ak4ak.moy.su/logo1.jpg";
 
-    // Функция авто-удаления текста tablica1, если он лезет из GitHub
     function removeExternalLabels() {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
@@ -179,8 +180,6 @@
     function initLeaderboard() {
         const list = document.getElementById('leaderboard');
         list.innerHTML = '';
-        
-        sortPlayers();
 
         players.forEach((player, index) => {
             const li = document.createElement('li');
@@ -203,27 +202,22 @@
         });
     }
 
-    function sortPlayers() {
-        players.sort((a, b) => {
-            if (b.chak !== a.chak) return b.chak - a.chak;
-            if (b.champ !== a.champ) return b.champ - a.champ;
-            return b.finalist - a.finalist;
-        });
-    }
-
+    // Чистая жесткая сортировка строго по набранным Чак-Чакам
     function updatePositions() {
-        sortPlayers();
+        const sorted = [...players].sort((a, b) => b.chak - a.chak);
 
-        players.forEach((player, newIndex) => {
+        sorted.forEach((player, newIndex) => {
             const row = document.querySelector(`.player-row[data-id="${player.id}"]`);
             if (row) {
+                // Плавная смена порядкового номера (#) на экране
                 row.querySelector('.rank-num').innerText = newIndex + 1;
 
+                // Перемещение строки физически вверх/вниз на её законную позицию
                 anime({
                     targets: row,
                     translateY: newIndex * ROW_HEIGHT,
-                    duration: 600,
-                    easing: 'easeInOutQuad'
+                    duration: 700,
+                    easing: 'easeInOutCubic'
                 });
             }
         });
@@ -233,33 +227,37 @@
         setInterval(() => {
             const randomPlayerIndex = Math.floor(Math.random() * players.length);
             const isWin = Math.random() > 0.5; 
-            
             const player = players[randomPlayerIndex];
 
             if (isWin) {
+                // Победитель финала: +2 чак-чака, +1 чемпион
                 player.chak += 2;
                 player.champ += 1;
                 document.getElementById(`champ-${player.id}`).innerText = player.champ;
             } else {
+                // Проигрыш в финале (Финалист): +1 чак-чак, +1 финалист
                 player.chak += 1;
                 player.finalist += 1;
                 document.getElementById(`finalist-${player.id}`).innerText = player.finalist;
             }
 
+            // Обновляем количество Чак-Чаков в строке
             const chakElement = document.getElementById(`chak-${player.id}`);
             if (chakElement) {
                 chakElement.querySelector('.chak-value').innerText = player.chak;
                 
+                // Вспышка-пульсация цифр
                 anime({
                     targets: chakElement,
                     scale: [1, 1.3, 1],
-                    duration: 400,
+                    duration: 350,
                     easing: 'easeOutSine'
                 });
             }
 
+            // Сразу пересчитываем места и запускаем анимацию сдвига
             updatePositions();
-        }, 3500);
+        }, 3000);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
