@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Турнирная Таблица ЧакЧак — Чистая Анимация Игроков</title>
+    <title>Турнирная Таблица ЧакЧак — 3D Частицы с Логотипом</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -18,7 +18,7 @@
             perspective: 1000px;
         }
         
-        /* Интерактивный 3D-контейнер */
+        /* Интерактивный 3D-контейнер карточки */
         .card {
             position: relative;
             width: 650px;
@@ -69,7 +69,7 @@
             background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.35));
         }
 
-        /* Контент с плавной трансформацией */
+        /* Заголовок с плавной трансформацией */
         .title { 
             position: absolute;
             top: 40px;
@@ -79,7 +79,7 @@
             transform: translate3d(0%, 0px, 0px);
         }
 
-        /* Выталкиваем контент по оси Z вперед и вверх */
+        /* Выталкиваем заголовок по оси Z вперед и вверх */
         .card:hover .title { 
             transform: translate3d(0%, -50px, 100px); 
         }
@@ -109,10 +109,12 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Создаем элемент изображения для загрузки твоего логотипа чак-чака
         const imgLogo = new Image();
         imgLogo.crossOrigin = "Anonymous"; 
-        imgLogo.src = 'https://moy.su';
+        imgLogo.src = 'https://4ak4ak.moy.su/logo1.jpg';
 
+        // Запуск построения сцены только после полной загрузки твоей картинки
         imgLogo.onload = () => {
             buildInteractiveParticles(imgLogo);
         };
@@ -127,6 +129,7 @@
 
         const sizes = { width: window.innerWidth, height: window.innerHeight };
         
+        // Настройка 3D Камеры и Рендерера
         const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
         camera.position.z = 5.5;
         
@@ -134,40 +137,39 @@
         renderer.setSize(sizes.width, sizes.height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+        // Создаем скрытый холст для сканирования таблицы в пиксели
         const textCanvas = document.createElement('canvas');
         const tCtx = textCanvas.getContext('2d');
         textCanvas.width = 600; textCanvas.height = 400;
 
-        // ИСПРАВЛЕНО: Фон холста залит строго в цвет заднего плана сайта (#13151c), ячейки сливаются с ним
-        tCtx.fillStyle = '#13151c'; 
-        tCtx.fillRect(0, 0, 600, 400);
+        tCtx.fillStyle = '#13151c'; tCtx.fillRect(0, 0, 600, 400);
+        tCtx.fillStyle = '#3b82f6'; tCtx.font = 'bold 22px sans-serif';
+        tCtx.fillText('ТУРНИРНАЯ ТАБЛИЦА', 185, 45);
 
-        // ИСПРАВЛЕНО: Убраны все верхние надписи таблицы и шапки колонок, генерация начинается сразу со строк игроков
-        // ИСПРАВЛЕНО: Добавлены рандомные геймерские никнеймы
+        tCtx.fillStyle = '#94a3b8'; tCtx.font = '13px sans-serif';
+        tCtx.fillText('#        ИГРОК        ЧЕМПИОН        ФИНАЛИСТ        ЧАК-ЧАК', 40, 95);
+
         const players = [
-            ['1', 'X-Slayer_99', '5', '2 ', '12 '], 
-            ['2', 'Neon_Viper', '4', '1 ', '9 '],
-            ['3', 'Chak_Master', '3', '3 ', '8 '], 
-            ['4', 'Cyber_Glitch', '2', '0 ', '6 '],
-            ['5', 'Zeus_Awper', '2', '1 ', '5 '], 
-            ['6', 'Shadow_Step', '1', '2 ', '4 '],
-            ['7', 'Bullet_Rain', '1', '0 ', '3 ']
+            ['1', '45', '1', '0', '2 '], ['2', '123', '1', '0', '2 '],
+            ['3', 'qweqwe', '1', '0', '2 '], ['4', 'hhh', '1', '0', '2 '],
+            ['5', 'asdxzc3', '1', '0', '2 '], ['6', 'chesalova2013', '1', '0', '2 '],
+            ['7', 'fg', '1', '0', '2 ']
         ];
 
         players.forEach((p, i) => {
-            const y = 60 + i * 45; // Сместили строки повыше, так как заголовков больше нет
+            const y = 145 + i * 35;
+            tCtx.fillStyle = 'rgba(255,255,255,0.08)'; tCtx.fillRect(30, y - 20, 540, 1);
+            tCtx.fillStyle = '#94a3b8'; tCtx.fillText(p[0], 43, y);
+            tCtx.fillStyle = (i===0||i===2) ? '#facc15' : '#ffffff'; tCtx.fillText(p[1], 100, y);
+            tCtx.fillStyle = '#f97316'; tCtx.fillText(p[2], 260, y);
+            tCtx.fillStyle = '#f97316'; tCtx.fillText(p[3], 380, y);
+            tCtx.fillStyle = '#facc15'; tCtx.fillText(p[4], 490, y);
             
-            // ИСПРАВЛЕНО: Фоны ячеек и разделительные линии полностью отсутствуют, цвет сливается с задним фоном
-            tCtx.fillStyle = '#94a3b8'; tCtx.font = '15px sans-serif'; tCtx.fillText(p, 43, y);
-            tCtx.fillStyle = (i===0||i===2) ? '#facc15' : '#ffffff'; tCtx.fillText(p, 100, y);
-            tCtx.fillStyle = '#f97316'; tCtx.fillText(p, 280, y);
-            tCtx.fillStyle = '#f97316'; tCtx.fillText(p, 400, y);
-            tCtx.fillStyle = '#facc15'; tCtx.fillText(p, 500, y);
-            
-            // Отрисовка твоего логотипа чак-чака рядом с очками
-            tCtx.drawImage(imgLogo, 520, y - 14, 18, 16);
+            // ИСПРАВЛЕНО: Вместо текстового смайлика рисуем уменьшенную картинку чак-чака прямо на холст для сканирования точек
+            tCtx.drawImage(imgLogo, 505, y - 13, 16, 16);
         });
 
+        // Превращаем пиксели (включая буквы и логотипы) в 3D точки
         const imgData = tCtx.getImageData(0, 0, 600, 400).data;
         const scale = 0.011;
 
