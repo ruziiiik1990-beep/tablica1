@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Турнирная Таблица ЧакЧак — Чистая Анимация</title>
+    <title>Турнирная Таблица ЧакЧак — Чистые 3D Частицы</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -11,29 +11,25 @@
             background: #13151c; 
             width: 100vw; 
             height: 100vh; 
-            font-family: 'Segoe UI', sans-serif;
+            font-family: sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            perspective: 1000px; /* Включаем 3D-пространство для эффектов */
+            perspective: 1000px;
         }
         
-        /* ИНТЕРАКТИВНЫЙ 3D-КОНТЕЙНЕР ТАБЛИЦЫ */
+        /* Интерактивный 3D-контейнер карточки */
         .card {
             position: relative;
-            width: 100%;
-            max-width: 650px;
-            background: rgba(30, 34, 43, 0.65);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
+            width: 650px;
+            height: 450px;
+            z-index: 2;
+            cursor: pointer;
             transform-style: preserve-3d;
-            transition: transform 0.5s ease, border-color 0.5s ease;
+            transition: transform 0.5s ease;
         }
 
-        /* ОБЁРТКА ДЛЯ НЕОНОВЫХ ЭФФЕКТОВ */
+        /* Обёртка для эффектов свечения */
         .wrapper {
             position: absolute;
             top: 0;
@@ -45,15 +41,15 @@
             transform-style: preserve-3d;
         }
 
-        /* Псевдоэлементы неонового свечения (Изначально скрыты) */
+        /* Псевдоэлементы свечения: изначально скрыты */
         .wrapper::before, .wrapper::after {
             content: "";
             position: absolute;
             left: 50%;
-            transform: translateX(-50%) translateZ(-1px);
+            transform: translateX(-50%);
             width: 80%;
             background: linear-gradient(90deg, transparent, #3b82f6, transparent);
-            filter: blur(20px);
+            filter: blur(15px);
             opacity: 0;
             transition: opacity 0.5s ease, height 0.5s ease;
         }
@@ -61,188 +57,180 @@
         .wrapper::before { top: -5px; height: 5px; }
         .wrapper::after { bottom: -5px; height: 5px; }
 
-        /* СТРОГО ПО ТВОЕМУ CSS: Зажигаем неон при наведении */
+        /* СТРОГО ПО ТВОЕМУ ЗАПРОСУ: При наведении зажигаем неоновые полосы */
         .card:hover .wrapper::before, 
         .card:hover .wrapper::after { 
             opacity: 1; 
         } 
 
-        /* СТРОГО ПО ТВОЕМУ CSS: Вытягиваем нижний неон до 120px */
+        /* СТРОГО ПО ТВОЕМУ ЗАПРОСУ: Нижнее свечение вытягивается до 120px */
         .card:hover .wrapper::after { 
             height: 120px; 
-            background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.4));
+            background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.35));
         }
 
-        .card:hover {
-            border-color: rgba(59, 130, 246, 0.6);
-        }
-
-        /* СТРОГО ПО ТВОЕМУ CSS: Заголовок и контент с 3D-трансформацией */
+        /* Заголовок с плавной трансформацией */
         .title { 
+            position: absolute;
+            top: 40px;
+            left: 0;
             width: 100%; 
             transition: transform 0.5s ease;
             transform: translate3d(0%, 0px, 0px);
         }
 
-        /* СТРОГО ПО ТВОЕМУ CSS: Выталкиваем контент вперед по оси Z и вверх */
+        /* СТРОГО ПО ТВОЕМУ ЗАПРОСУ: Выталкиваем заголовок по оси Z вперед и вверх */
         .card:hover .title { 
             transform: translate3d(0%, -50px, 100px); 
         }
 
-        /* СТИЛИЗАЦИЯ ТУРНИРНОЙ ТАБЛИЦЫ */
-        .main-heading {
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            color: #3b82f6;
-            letter-spacing: 2px;
-            margin-bottom: 25px;
-            text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-            color: #ffffff;
-        }
-
-        th {
-            font-size: 13px;
-            color: #94a3b8;
-            letter-spacing: 1px;
-            padding-bottom: 15px;
-            text-transform: uppercase;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
-        td {
-            padding: 12px 5px;
-            font-size: 15px;
-            font-weight: 500;
-        }
-
-        tr {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* Цвета игроков и очков из оригинального скриншота */
-        .rank { color: #94a3b8; font-weight: bold; }
-        .gold { color: #facc15; text-shadow: 0 0 8px rgba(250, 204, 21, 0.3); }
-        .orange { color: #f97316; }
-        
-        .chak-icon {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            color: #facc15;
-        }
-        .chak-icon::after {
-            content: "🍪";
-            font-size: 14px;
-        }
-
-        .footer-text {
-            text-align: center;
-            font-size: 12px;
-            color: #576575;
-            margin-top: 20px;
-            letter-spacing: 0.5px;
+        canvas.webgl { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 1; 
+            pointer-events: none; 
         }
     </style>
 </head>
 <body>
 
-<!-- Интерактивная 3D Карточка турнирной таблицы -->
 <div class="card" id="tableCard">
     <div class="wrapper"></div>
-    
-    <!-- Весь контент таблицы, реагирующий на 3D Hover -->
-    <div class="title">
-        <div class="main-heading">ТУРНИРНАЯ ТАБЛИЦА</div>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 10%;">#</th>
-                    <th style="width: 30%;">ИГРОК</th>
-                    <th style="width: 20%;">ЧЕМПИОН</th>
-                    <th style="width: 20%;">ФИНАЛИСТ</th>
-                    <th style="width: 20%;">ЧАК-ЧАК</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="rank">1</td>
-                    <td class="gold">45</td>
-                    <td class="orange">1</td>
-                    <td class="orange">0</td>
-                    <td><span class="chak-icon">2 </span></td>
-                </tr>
-                <tr>
-                    <td class="rank">2</td>
-                    <td>123</td>
-                    <td class="orange">1</td>
-                    <td class="orange">0</td>
-                    <td><span class="chak-icon">2 </span></td>
-                </tr>
-                <tr>
-                    <td class="rank">3</td>
-                    <td class="orange">qweqwe</td>
-                    <td class="orange">1</td>
-                    <td class="orange">0</td>
-                    <td><span class="chak-icon">2 </span></td>
-                </tr>
-                <tr>
-                    <td class="rank">4</td>
-                    <td>hhh</td>
-                    <td class="orange">1</td>
-                    <td class="orange">0</td>
-                    <td><span class="chak-icon">2 </span></td>
-                </tr>
-                <tr>
-                    <td class="rank">5</td>
-                    <td>asdxzc3</td>
-                    <td class="orange">1</td>
-                    <td class="orange">0</td>
-                    <td><span class="chak-icon">2 </span></td>
-                </tr>
-                <tr>
-                    <td class="rank">6</td>
-                    <td>chesalova2013</td>
-                    <td class="orange">1</td>
-                    <td class="orange">0</td>
-                    <td><span class="chak-icon">2 </span></td>
-                </tr>
-                <tr>
-                    <td class="rank">7</td>
-                    <td>fg</td>
-                    <td class="orange">1</td>
-                    <td class="orange">0</td>
-                    <td><span class="chak-icon">2 </span></td>
-                </tr>
-            </tbody>
-        </table>
-        
-        <div class="footer-text">Победитель финала +2 чак-чака · Финалист +1 чак-чак</div>
-    </div>
+    <div class="title"></div>
 </div>
 
+<canvas class="webgl"></canvas>
+
+<!-- Подключаем официальный, стабильный Three.js из CDN -->
+<script src="https://cloudflare.com"></script>
+
 <script>
-    const card = document.getElementById('tableCard');
-
-    // Скрипт отслеживания мыши для динамического наклона всей карточки в 3D
-    window.addEventListener('mousemove', (e) => {
-        const x = (e.clientX / window.innerWidth) - 0.5;
-        const y = (e.clientY / window.innerHeight) - 0.5;
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.querySelector('canvas.webgl');
+        const scene = new THREE.Scene();
         
-        // Поворачиваем таблицу по осям X и Y в зависимости от положения курсора
-        card.style.transform = `rotateX(${-y * 30}deg) rotateY(${x * 30}deg)`;
-    });
+        let geometry = null, material = null, points = null;
+        let targetPositions = [], currentPositions = [], colors = [];
 
-    // Возвращаем таблицу в исходное ровное положение, когда мышь уходит с экрана
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+        const sizes = { width: window.innerWidth, height: window.innerHeight };
+        
+        // Настройка 3D Камеры и Рендерера
+        const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+        camera.position.z = 5.5;
+        
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+        renderer.setSize(sizes.width, sizes.height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Создаем скрытый холст для сканирования таблицы в пиксели
+        const textCanvas = document.createElement('canvas');
+        const tCtx = textCanvas.getContext('2d');
+        textCanvas.width = 600; textCanvas.height = 400;
+
+        tCtx.fillStyle = '#13151c'; tCtx.fillRect(0, 0, 600, 400);
+        tCtx.fillStyle = '#3b82f6'; tCtx.font = 'bold 22px sans-serif';
+        tCtx.fillText('ТУРНИРНАЯ ТАБЛИЦА', 185, 45);
+
+        tCtx.fillStyle = '#94a3b8'; tCtx.font = '13px sans-serif';
+        tCtx.fillText('#        ИГРОК        ЧЕМПИОН        ФИНАЛИСТ        ЧАК-ЧАК', 40, 95);
+
+        const players = [
+            ['1', '45', '1', '0', '2  🍪'], ['2', '123', '1', '0', '2  🍪'],
+            ['3', 'qweqwe', '1', '0', '2  🍪'], ['4', 'hhh', '1', '0', '2  🍪'],
+            ['5', 'asdxzc3', '1', '0', '2  🍪'], ['6', 'chesalova2013', '1', '0', '2  🍪'],
+            ['7', 'fg', '1', '0', '2  🍪']
+        ];
+
+        players.forEach((p, i) => {
+            const y = 145 + i * 35;
+            tCtx.fillStyle = 'rgba(255,255,255,0.08)'; tCtx.fillRect(30, y - 20, 540, 1);
+            tCtx.fillStyle = '#94a3b8'; tCtx.fillText(p[0], 43, y);
+            tCtx.fillStyle = (i===0||i===2) ? '#facc15' : '#ffffff'; tCtx.fillText(p[1], 100, y);
+            tCtx.fillStyle = '#f97316'; tCtx.fillText(p[2], 260, y);
+            tCtx.fillStyle = '#f97316'; tCtx.fillText(p[3], 380, y);
+            tCtx.fillStyle = '#facc15'; tCtx.fillText(p[4], 490, y);
+        });
+
+        // Превращаем пиксели в 3D точки
+        const imgData = tCtx.getImageData(0, 0, 600, 400).data;
+        const scale = 0.011;
+
+        for (let y = 0; y < 400; y += 2) {
+            for (let x = 0; x < 600; x += 2) {
+                const idx = (y * 600 + x) * 4;
+                if (imgData[idx] > 25 || imgData[idx+1] > 25 || imgData[idx+2] > 25) {
+                    targetPositions.push((x - 300) * scale, -(y - 200) * scale, (Math.random() - 0.5) * 0.05);
+                    currentPositions.push((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 12, (Math.random() - 0.5) * 12);
+                    colors.push(imgData[idx]/255, imgData[idx+1]/255, imgData[idx+2]/255);
+                }
+            }
+        }
+
+        // ТВОЯ ОЧИСТКА И PointsMaterial СВЕЧЕНИЕ
+        if (points !== null) {
+            geometry.dispose();
+            material.dispose();
+            scene.remove(points);
+        }
+
+        geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(currentPositions), 3));
+        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+        material = new THREE.PointsMaterial({
+            size: 0.02,
+            sizeAttenuation: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+            vertexColors: true
+        });
+
+        points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        // Интерактивный наклон за курсором мыши
+        const card = document.getElementById('tableCard');
+        let tRotX = 0, tRotY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) - 0.5;
+            const y = (e.clientY / window.innerHeight) - 0.5;
+            tRotY = x * 0.4;
+            tRotX = -y * 0.4;
+            card.style.transform = `rotateX(${tRotX * 45}deg) rotateY(${tRotY * 45}deg)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            tRotX = 0; tRotY = 0;
+            card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+        });
+
+        window.addEventListener('resize', () => {
+            sizes.width = window.innerWidth; sizes.height = window.innerHeight;
+            camera.aspect = sizes.width / sizes.height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(sizes.width, sizes.height);
+        });
+
+        // Рендер-цикл сборки частиц из космоса на свои места
+        const tick = () => {
+            const posArray = points.geometry.attributes.position.array;
+            for (let i = 0; i < posArray.length; i++) {
+                posArray[i] += (targetPositions[i] - posArray[i]) * 0.05;
+            }
+            points.geometry.attributes.position.needsUpdate = true;
+            
+            // Синхронизируем вращение 3D частиц с движениями мыши
+            points.rotation.y += (tRotY - points.rotation.y) * 0.1;
+            points.rotation.x += (tRotX - points.rotation.x) * 0.1;
+
+            renderer.render(scene, camera);
+            window.requestAnimationFrame(tick);
+        };
+        tick();
     });
 </script>
 
