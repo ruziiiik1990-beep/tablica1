@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Турнирная Таблица ЧакЧак — Чистые 3D Частицы</title>
+    <title>Турнирная Таблица ЧакЧак — 3D Частицы с Логотипом</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -57,13 +57,13 @@
         .wrapper::before { top: -5px; height: 5px; }
         .wrapper::after { bottom: -5px; height: 5px; }
 
-        /* СТРОГО ПО ТВОЕМУ ЗАПРОСУ: При наведении зажигаем неоновые полосы */
+        /* При наведении зажигаем неоновые полосы */
         .card:hover .wrapper::before, 
         .card:hover .wrapper::after { 
             opacity: 1; 
         } 
 
-        /* СТРОГО ПО ТВОЕМУ ЗАПРОСУ: Нижнее свечение вытягивается до 120px */
+        /* Нижнее свечение вытягивается до 120px */
         .card:hover .wrapper::after { 
             height: 120px; 
             background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.35));
@@ -79,7 +79,7 @@
             transform: translate3d(0%, 0px, 0px);
         }
 
-        /* СТРОГО ПО ТВОЕМУ ЗАПРОСУ: Выталкиваем заголовок по оси Z вперед и вверх */
+        /* Выталкиваем заголовок по оси Z вперед и вверх */
         .card:hover .title { 
             transform: translate3d(0%, -50px, 100px); 
         }
@@ -109,6 +109,18 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Создаем элемент изображения для загрузки твоего логотипа чак-чака
+        const imgLogo = new Image();
+        imgLogo.crossOrigin = "Anonymous"; 
+        imgLogo.src = 'https://4ak4ak.moy.su/logo1.jpg';
+
+        // Запуск построения сцены только после полной загрузки твоей картинки
+        imgLogo.onload = () => {
+            buildInteractiveParticles(imgLogo);
+        };
+    });
+
+    function buildInteractiveParticles(imgLogo) {
         const canvas = document.querySelector('canvas.webgl');
         const scene = new THREE.Scene();
         
@@ -138,10 +150,10 @@
         tCtx.fillText('#        ИГРОК        ЧЕМПИОН        ФИНАЛИСТ        ЧАК-ЧАК', 40, 95);
 
         const players = [
-            ['1', '45', '1', '0', '2  🍪'], ['2', '123', '1', '0', '2  🍪'],
-            ['3', 'qweqwe', '1', '0', '2  🍪'], ['4', 'hhh', '1', '0', '2  🍪'],
-            ['5', 'asdxzc3', '1', '0', '2  🍪'], ['6', 'chesalova2013', '1', '0', '2  🍪'],
-            ['7', 'fg', '1', '0', '2  🍪']
+            ['1', '45', '1', '0', '2 '], ['2', '123', '1', '0', '2 '],
+            ['3', 'qweqwe', '1', '0', '2 '], ['4', 'hhh', '1', '0', '2 '],
+            ['5', 'asdxzc3', '1', '0', '2 '], ['6', 'chesalova2013', '1', '0', '2 '],
+            ['7', 'fg', '1', '0', '2 ']
         ];
 
         players.forEach((p, i) => {
@@ -152,9 +164,12 @@
             tCtx.fillStyle = '#f97316'; tCtx.fillText(p[2], 260, y);
             tCtx.fillStyle = '#f97316'; tCtx.fillText(p[3], 380, y);
             tCtx.fillStyle = '#facc15'; tCtx.fillText(p[4], 490, y);
+            
+            // ИСПРАВЛЕНО: Вместо текстового смайлика рисуем уменьшенную картинку чак-чака прямо на холст для сканирования точек
+            tCtx.drawImage(imgLogo, 505, y - 13, 16, 16);
         });
 
-        // Превращаем пиксели в 3D точки
+        // Превращаем пиксели (включая буквы и логотипы) в 3D точки
         const imgData = tCtx.getImageData(0, 0, 600, 400).data;
         const scale = 0.011;
 
@@ -169,7 +184,6 @@
             }
         }
 
-        // ТВОЯ ОЧИСТКА И PointsMaterial СВЕЧЕНИЕ
         if (points !== null) {
             geometry.dispose();
             material.dispose();
@@ -191,7 +205,6 @@
         points = new THREE.Points(geometry, material);
         scene.add(points);
 
-        // Интерактивный наклон за курсором мыши
         const card = document.getElementById('tableCard');
         let tRotX = 0, tRotY = 0;
 
@@ -215,15 +228,12 @@
             renderer.setSize(sizes.width, sizes.height);
         });
 
-        // Рендер-цикл сборки частиц из космоса на свои места
         const tick = () => {
             const posArray = points.geometry.attributes.position.array;
             for (let i = 0; i < posArray.length; i++) {
                 posArray[i] += (targetPositions[i] - posArray[i]) * 0.05;
             }
             points.geometry.attributes.position.needsUpdate = true;
-            
-            // Синхронизируем вращение 3D частиц с движениями мыши
             points.rotation.y += (tRotY - points.rotation.y) * 0.1;
             points.rotation.x += (tRotX - points.rotation.x) * 0.1;
 
@@ -231,7 +241,7 @@
             window.requestAnimationFrame(tick);
         };
         tick();
-    });
+    }
 </script>
 
 </body>
