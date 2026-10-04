@@ -1,237 +1,254 @@
+
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Таблица Рейтинга</title>
-    <!-- Библиотека Anime.js для плавного перемещения строк -->
-    <script src="https://cloudflare.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Турнирная Таблица ЧакЧак — Фикс Заголовка GitHub</title>
     <style>
-        /* ==========================================================================
-           ЖЕСТКАЯ ЗАЧИСТКА СТИЛЕЙ GITHUB PAGES (Удаление белой полосы и сброс темы)
-           ========================================================================== */
-        header, footer, hr, .markdown-body hr, #header, #footer,
-        .markdown-body::before, .markdown-body::after, .position-relative::after {
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            overflow: hidden; 
+            background: #13151c; 
+            width: 100vw; 
+            height: 100vh; 
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px; /* Включаем 3D-пространство для эффектов */
+        }
+        
+        /* ИСПРАВЛЕНО: Скрываем заголовок h1 (tablica1), приходящий с GitHub */
+        .title h1, #tablica1, .tablica1, h1 {
             display: none !important;
-            border: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
             height: 0 !important;
             margin: 0 !important;
             padding: 0 !important;
-            opacity: 0 !important;
-            box-shadow: none !important;
+        }
+        
+        /* ИНТЕРАКТИВНЫЙ 3D-КОНТЕЙНЕР ТАБЛИЦЫ */
+        .card {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            background: #13151c !important; 
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease, border-color 0.5s ease;
         }
 
-        /* Полный сброс контейнера markdown-body, который создает рамки и линии */
-        .markdown-body {
-            padding: 0 !important;
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            max-width: none !important;
+        /* ОБЁРТКА ДЛЯ НЕОНОВЫХ ЭФФЕКТОВ */
+        .wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            pointer-events: none;
+            transform-style: preserve-3d;
         }
 
-        /* Полный сброс фона страницы, перекрывающий разметку темы GitHub */
-        html, body {
-            background-color: #374151 !important; /* Твой оригинальный темно-серый фон */
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 100% !important;
-            height: 100vh !important;
+        /* Псевдоэлементы неонового свечения (Изначально скрыты) */
+        .wrapper::before, .wrapper::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) translateZ(-1px);
+            width: 80%;
+            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+            filter: blur(20px);
+            opacity: 0;
+            transition: opacity 0.5s ease, height 0.5s ease;
         }
 
-        body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; 
-            color: #fff; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            perspective: 1000px; 
+        .wrapper::before { top: -5px; height: 5px; }
+        .wrapper::after { bottom: -5px; height: 5px; }
+
+        /* Зажигаем неон при наведении */
+        .card:hover .wrapper::before, 
+        .card:hover .wrapper::after { 
+            opacity: 1; 
+        } 
+
+        /* Вытягиваем нижний неон до 120px */
+        .card:hover .wrapper::after { 
+            height: 120px; 
+            background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.4));
         }
 
-        /* Контейнер-обертка для 3D наклона карточки */
-        .table-wrapper-3d { 
+        .card:hover {
+            border-color: rgba(59, 130, 246, 0.6);
+        }
+
+        /* Контент с плавной 3D-трансформацией */
+        .title { 
             width: 100%; 
-            max-width: 650px; 
-            transition: transform 0.1s ease-out; 
-            transform-style: preserve-3d; 
-            cursor: pointer;
-            border-top: none !important; /* Гарантия отсутствия рамки сверху */
+            transition: transform 0.5s ease;
+            transform: translate3d(0%, 0px, 0px);
         }
 
-        .table-container { 
-            width: 100%; 
-            background: #465a8a; /* Сине-голубой цвет карточки со скриншота */
-            border-radius: 16px; 
-            padding: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
-            box-sizing: border-box; 
+        /* Выталкиваем контент вперед по оси Z и вверх */
+        .card:hover .title { 
+            transform: translate3d(0%, -50px, 100px); 
         }
 
-        /* Шапка таблицы — заголовков и полосок над ней больше нет */
-        .table-header { 
-            display: grid; 
-            grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr; 
-            text-align: center; 
-            font-weight: bold; 
-            font-size: 13px; 
-            text-transform: uppercase; 
-            padding: 12px 10px; 
-            border: 1px solid rgba(255,255,255,0.3); 
-            border-bottom: 2px solid rgba(255,255,255,0.4); 
-            background: rgba(255,255,255,0.05); 
-            border-top-left-radius: 8px; 
-            border-top-right-radius: 8px; 
-            transform: translateZ(30px); 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            color: #ffffff;
+            background: #13151c !important; 
         }
 
-        .leaderboard-list { 
-            position: relative; 
-            height: 315px; /* Высота под 7 строк (7 игроков * 45px) */
-            margin: 0; 
-            padding: 0; 
-            list-style: none; 
-            background: rgba(255,255,255,0.02); 
-            border: 1px solid rgba(255,255,255,0.3); 
-            border-top: none; 
-            border-bottom-left-radius: 8px; 
-            border-bottom-right-radius: 8px; 
-            overflow: hidden; 
-            transform: translateZ(20px); 
+        th {
+            font-size: 13px;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            padding-bottom: 15px;
+            text-transform: uppercase;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            background: #13151c !important;
         }
 
-        /* Строка игрока с поддержкой абсолютного смещения */
-        .player-row { 
-            position: absolute; 
-            left: 0; 
-            top: 0; 
-            width: 100%; 
-            height: 45px; 
-            display: grid; 
-            grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr; 
-            align-items: center; 
-            text-align: center; 
-            box-sizing: border-box; 
-            border-bottom: 1px solid rgba(255,255,255,0.2); 
-            font-size: 14px; 
-            background: #465a8a; 
-            will-change: transform; 
-            transform-style: preserve-3d; 
+        td {
+            padding: 12px 5px;
+            font-size: 15px;
+            font-weight: 500;
+            background: #13151c !important; 
         }
 
-        .col-rank { color: #9ca3af; font-weight: bold; transform: translateZ(15px); transition: color 0.3s; }
-        .col-name { font-weight: bold; transform: translateZ(25px); }
+        tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: #13151c !important; 
+        }
+
+        /* Цвета игроков и очков */
+        .rank { color: #94a3b8; font-weight: bold; }
+        .gold { color: #facc15; text-shadow: 0 0 8px rgba(250, 204, 21, 0.3); }
+        .orange { color: #f97316; }
         
-        /* Стили подсветки металлов для топ-3 мест */
-        .rank-gold { color: #ffd700 !important; text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
-        .rank-silver { color: #c0c0c0 !important; text-shadow: 0 0 8px rgba(192, 192, 192, 0.4); }
-        .rank-bronze { color: #cd7f32 !important; text-shadow: 0 0 8px rgba(205, 127, 50, 0.4); }
+        .chak-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: #facc15;
+            vertical-align: middle;
+            background: #13151c !important;
+        }
+        
+        .chak-img {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            border-radius: 4px;
+        }
 
-        /* Цвета ников по твоему макету */
-        .player-row[data-name="45"] .col-name { color: #f59e0b; }
-        .player-row[data-name="qweqwe"] .col-name { color: #ed8936; }
-        
-        .col-champ, .col-finalist { color: #ed8936; font-weight: bold; transform: translateZ(15px); }
-        
-        /* Чак-чак с белой подложкой */
-        .col-chak { display: flex; align-items: center; justify-content: center; gap: 6px; color: #eab308; font-weight: bold; font-size: 16px; transform: translateZ(35px); }
-        .chak-icon { width: 20px; height: 20px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 1px; }
-        
-        .table-footer-text { text-align: center; font-size: 11px; color: #9ca3af; margin-top: 15px; transform: translateZ(10px); }
+        .footer-text {
+            text-align: center;
+            font-size: 12px;
+            color: #576575;
+            margin-top: 20px;
+            letter-spacing: 0.5px;
+            background: #13151c !important;
+        }
     </style>
 </head>
 <body>
 
-<div class="table-wrapper-3d" id="card3d">
-    <div class="table-container">
-        <div class="table-header">
-            <div>#</div><div>Игрок</div><div>Чемпион</div><div>Финалист</div><div>Чак-Чак</div>
-        </div>
-        <ul class="leaderboard-list" id="leaderboard"></ul>
-        <div class="table-footer-text">Победитель финала +2 чак-чака • Финалист +1 чак-чака</div>
+<!-- Интерактивная 3D Карточка турнирной таблицы -->
+<div class="card" id="tableCard">
+    <div class="wrapper"></div>
+    
+    <!-- Весь контент таблицы, реагирующий на 3D Hover -->
+    <div class="title">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 10%;">#</th>
+                    <th style="width: 30%;">ИГРОК</th>
+                    <th style="width: 20%;">ЧЕМПИОН</th>
+                    <th style="width: 20%;">ФИНАЛИСТ</th>
+                    <th style="width: 20%;">ЧАК-ЧАК</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="rank">1</td>
+                    <td class="gold">X-Slayer_99</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" loading="lazy" alt="chak"></span></td>
+                </tr>
+                <tr>
+                    <td class="rank">2</td>
+                    <td>Neon_Viper</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" loading="lazy" alt="chak"></span></td>
+                </tr>
+                <tr>
+                    <td class="rank">3</td>
+                    <td class="orange">Chak_Master</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" loading="lazy" alt="chak"></span></td>
+                </tr>
+                <tr>
+                    <td class="rank">4</td>
+                    <td>Cyber_Glitch</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" loading="lazy" alt="chak"></span></td>
+                </tr>
+                <tr>
+                    <td class="rank">5</td>
+                    <td>Zeus_Awper</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                </tr>
+                <tr>
+                    <td class="rank">6</td>
+                    <td>Shadow_Step</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                </tr>
+                <tr>
+                    <td class="rank">7</td>
+                    <td>Bullet_Rain</td>
+                    <td class="orange">1</td>
+                    <td class="orange">0</td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" loading="lazy" alt="chak"></span></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="footer-text">Победитель финала +2 чак-чака · Финалист +1 чак-чак</div>
     </div>
 </div>
 
 <script>
-    const namesPool = ["Безумный Макс", "Ночной Призрак", "Стальной Лис", "Гроза Арены", "Тайный Нео", "Cyber_Chak", "45", "qweqwe", "123", "hhh", "fg"];
-    
-    function generatePlayers() {
-        const shuffled = [...namesPool].sort(() => 0.5 - Math.random());
-        return Array.from({length: 7}, (_, i) => ({ id: i + 1, name: shuffled[i], champ: 0, finalist: 0, chak: 0 }));
-    }
+    const card = document.getElementById('tableCard');
 
-    let players = generatePlayers();
-    const ROW_HEIGHT = 45;
-    const logoUrl = "https://4ak4ak.moy.su/logo1.jpg";
+    window.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth) - 0.5;
+        const y = (e.clientY / window.innerHeight) - 0.5;
+        card.style.transform = `rotateX(${-y * 30}deg) rotateY(${x * 30}deg)`;
+    });
 
-    // Функция жесткой зачистки текстового мусора и внешних блоков хостинга в DOM
-    function cleanExternalLayout() {
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-        let node;
-        while (node = walker.nextNode()) {
-            const val = node.nodeValue.toLowerCase();
-            if (val.includes('tablica1') || val.includes('doctype')) {
-                const parent = node.parentElement;
-                if (parent && !parent.closest('.table-container') && parent !== document.body) {
-                    parent.style.display = 'none';
-                }
-            }
-        }
-    }
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+    });
+</script>
 
-    function initLeaderboard() {
-        const list = document.getElementById('leaderboard');
-        list.innerHTML = '';
-        players.forEach((p, i) => {
-            const li = document.createElement('li');
-            li.className = 'player-row';
-            li.setAttribute('data-id', p.id);
-            li.setAttribute('data-name', p.name);
-            li.style.transform = `translateY(${i * ROW_HEIGHT}px)`;
-            li.innerHTML = `<div class="col-rank rank-num">${i + 1}</div><div class="col-name">${p.name}</div><div class="col-champ" id="champ-${p.id}">${p.champ}</div><div class="col-finalist" id="finalist-${p.id}">${p.finalist}</div><div class="col-chak" id="chak-${p.id}"><span class="chak-value">${p.chak}</span><img src="${logoUrl}" class="chak-icon" alt="*"></div>`;
-            list.appendChild(li);
-        });
-        applyRankColors();
-    }
-
-    function applyRankColors() {
-        const rows = document.querySelectorAll('.player-row');
-        rows.forEach(row => {
-            const rankBox = row.querySelector('.rank-num');
-            const currentRank = parseInt(rankBox.innerText);
-            
-            rankBox.classList.remove('rank-gold', 'rank-silver', 'rank-bronze');
-            
-            if (currentRank === 1) rankBox.classList.add('rank-gold');
-            else if (currentRank === 2) rankBox.classList.add('rank-silver');
-            else if (currentRank === 3) rankBox.classList.add('rank-bronze');
-        });
-    }
-
-    function updatePositions() {
-        const sorted = [...players].sort((a, b) => b.chak - a.chak);
-        sorted.forEach((p, newIndex) => {
-            const row = document.querySelector(`.player-row[data-id="${p.id}"]`);
-            if (row) {
-                row.querySelector('.rank-num').innerText = newIndex + 1;
-                anime({ 
-                    targets: row, 
-                    translateY: newIndex * ROW_HEIGHT, 
-                    duration: 800, 
-                    easing: 'easeInOutCubic',
-                    complete: function() {
-                        applyRankColors();
-                    }
-                });
-            }
-        });
-    }
-
-    function startSimulation() {
-        setInterval(() => {
-            const rIdx = Math.floor(Math.random() * players.length);
-            const isWin = Math.random() > 0.5;
-            const p = players[rIdx];
-
-            if (isWin) { p.chak += 2; p.champ += 1; document.getElementById(`champ-${p.id}`).innerText = p.champ; }
-            else { p.chak += 1; p.finalist += 1; document.getElementById(`finalist-${p.id}`).innerText = p.finalist; }
-
-            const chakEl = document.getElementById(`chak-${p.id}`);
-            if (chakEl) {
+</body>
+</html>
