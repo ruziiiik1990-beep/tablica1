@@ -18,11 +18,8 @@
         .card:hover { border-color:rgba(59,130,246,0.6); }
         .title { width:100%; transition:transform 0.5s ease; transform:translate3d(0%, 0px, 0px); }
         .card:hover .title { transform:translate3d(0%, -30px, 80px); }
-        
-        /* Стили для посимвольной анимации букв */
         .animated-text { display: flex; justify-content: center; flex-wrap: wrap; }
         .letter { display: inline-block; opacity: 0; transform: translateY(10px) scale(0.8); }
-        
         .main-header-title { font-size:22px; font-weight:800; color:#3b82f6; text-transform:uppercase; letter-spacing:1.5px; text-shadow:0 0 10px rgba(59,130,246,0.5); transform:translateZ(40px); margin-bottom:25px; }
         table { width:100%; border-collapse:collapse; text-align:center; color:#fff; background:#13151c !important; }
         th { font-size:13px; color:#94a3b8; letter-spacing:1px; padding-bottom:10px; text-transform:uppercase; border-bottom:2px solid rgba(255,255,255,0.1); }
@@ -32,7 +29,8 @@
         .gold { color:#facc15; text-shadow:0 0 8px rgba(250,204,21,0.3); }
         .orange { color:#f97316; }
         .chak-icon { display:inline-flex; align-items:center; justify-content:center; gap:6px; color:#facc15; vertical-align:middle; }
-        .chak-img { width:20px; height:20px; object-fit:contain; border-radius:50%; background:#fff !important; padding:1px; display:inline-block; }
+        /* Исправленные стили обертки картинки */
+        .chak-img { width:22px; height:22px; object-fit:contain; border-radius:50%; background:#fff !important; padding:1px; display:inline-block; }
         .footer-text { font-size:12px; color:#576575; letter-spacing:0.5px; margin-top:20px; }
     </style>
 </head>
@@ -41,9 +39,7 @@
 <div class="card" id="tableCard">
     <div class="wrapper"></div>
     <div class="title">
-        <!-- Буквы будут разбиты и анимированы скриптом -->
         <div class="main-header-title animated-text" id="headerText">Таблица Рейтинга</div>
-
         <table>
             <thead>
                 <tr>
@@ -57,41 +53,45 @@
             <tbody>
                 <tr>
                     <td class="rank">1</td><td class="gold">X-Slayer_99</td><td class="orange">1</td><td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="*"></span></td>
+                    <td><span class="chak-icon">2 <img src="//4ak4ak.moy.su/logo1.jpg" class="chak-img" onerror="handleImgError(this)" alt="*"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">2</td><td>Neon_Viper</td><td class="orange">1</td><td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="*"></span></td>
+                    <td><span class="chak-icon">2 <img src="//4ak4ak.moy.su/logo1.jpg" class="chak-img" onerror="handleImgError(this)" alt="*"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">3</td><td class="orange">Chak_Master</td><td class="orange">1</td><td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="*"></span></td>
+                    <td><span class="chak-icon">2 <img src="//4ak4ak.moy.su/logo1.jpg" class="chak-img" onerror="handleImgError(this)" alt="*"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">4</td><td>Cyber_Glitch</td><td class="orange">1</td><td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="*"></span></td>
+                    <td><span class="chak-icon">2 <img src="//4ak4ak.moy.su/logo1.jpg" class="chak-img" onerror="handleImgError(this)" alt="*"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">5</td><td>Zeus_Awper</td><td class="orange">1</td><td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="*"></span></td>
+                    <td><span class="chak-icon">2 <img src="//4ak4ak.moy.su/logo1.jpg" class="chak-img" onerror="handleImgError(this)" alt="*"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">6</td><td>Shadow_Step</td><td class="orange">1</td><td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="*"></span></td>
+                    <td><span class="chak-icon">2 <img src="//4ak4ak.moy.su/logo1.jpg" class="chak-img" onerror="handleImgError(this)" alt="*"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">7</td><td>Bullet_Rain</td><td class="orange">1</td><td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="*"></span></td>
+                    <td><span class="chak-icon">2 <img src="//4ak4ak.moy.su/logo1.jpg" class="chak-img" onerror="handleImgError(this)" alt="*"></span></td>
                 </tr>
             </tbody>
         </table>
-        
         <div class="footer-text animated-text" id="footerText">Победитель финала +2 чак-чака · Финалист +1 чак-чак</div>
     </div>
 </div>
 
 <script>
-    // Автоматически разбивает строку на отдельные буквы для stagger-эффекта
+    // Запасной вариант картинки (проверенный SVG), если хостинг заблокирует HTTP-протокол moy.su
+    function handleImgError(img) {
+        img.onerror = null;
+        img.src = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23facc15'/><circle cx='40' cy='40' r='8' fill='%23e2b80d'/><circle cx='65' cy='45' r='10' fill='%23e2b80d'/><circle cx='50' cy='68' r='12' fill='%23e2b80d'/></svg>";
+    }
+
     function prepareText(elementId) {
         const el = document.getElementById(elementId);
         const text = el.innerText;
@@ -99,24 +99,13 @@
         [...text].forEach(char => {
             const span = document.createElement('span');
             span.className = 'letter';
-            // Если пробел — сохраняем его структуру
             span.innerHTML = char === ' ' ? '&nbsp;' : char;
             el.appendChild(span);
         });
     }
 
-    // Тот самый эффект draw и stagger для букв (адаптированный под синтаксис браузера)
     function animateTextLetters() {
-        anime({
-            targets: '.letter',
-            opacity:,
-            translateY:,
-            scale: [0.8, 1],
-            easing: 'easeOutQuad', // Твой тип сглаживания inOutQuad / easeOutQuad
-            duration: 800,
-            delay: anime.stagger(100), // Твоя задержка между буквами delay: stagger(100)
-            loop: false
-        });
+        anime({ targets: '.letter', opacity: 1, translateY: 0, scale: [0.8, 1], easing: 'easeOutQuad', duration: 800, delay: anime.stagger(100) });
     }
 
     const card = document.getElementById('tableCard');
