@@ -1,9 +1,9 @@
-
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Таблица Лидеров</title>
+    <title>Турнирная Таблица</title>
     <script src="https://cloudflare.com"></script>
     <style>
         body {
@@ -27,17 +27,45 @@
             backdrop-filter: blur(10px);
         }
 
-        .table-header {
+        /* Тот самый верхний блок со статусами и картинками чак-чака */
+        .top-status-header {
             display: flex;
-            justify-content: space-between;
-            padding: 10px 15px;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4b5563;
+        }
+
+        .status-header-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-logo {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .header-badge {
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 12px;
             font-weight: bold;
             text-transform: uppercase;
-            font-size: 14px;
-            letter-spacing: 1px;
-            color: #9ca3af;
-            border-bottom: 2px solid #4b5563;
-            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-winner {
+            background-color: #f59e0b;
+            color: #1f2937;
+        }
+
+        .badge-finalist {
+            background-color: #3b82f6;
+            color: #ffffff;
         }
 
         .leaderboard-list {
@@ -84,33 +112,9 @@
             display: inline-block;
         }
 
-        .player-name-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         .player-name {
             font-size: 16px;
             font-weight: 500;
-        }
-
-        .badge {
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .badge-winner {
-            background-color: #f59e0b;
-            color: #1f2937;
-        }
-
-        .badge-finalist {
-            background-color: #3b82f6;
-            color: #ffffff;
         }
 
         .player-points {
@@ -126,30 +130,32 @@
 <body>
 
 <div class="leaderboard-container">
-    <div class="table-header">
-        <span>Игрок</span>
-        <span>Очки</span>
+    <!-- Верхняя панель: Победитель, Финалист и картинки чак-чака -->
+    <div class="top-status-header">
+        <div class="status-header-item">
+            <img src="https://4ak4ak.moy.su/logo1.jpg" class="header-logo" alt="чак-чак">
+            <span class="header-badge badge-winner">Победитель</span>
+        </div>
+        <div class="status-header-item">
+            <img src="https://4ak4ak.moy.su/logo1.jpg" class="header-logo" alt="чак-чак">
+            <span class="header-badge badge-finalist">Финалист</span>
+        </div>
     </div>
+
     <ul class="leaderboard-list" id="leaderboard"></ul>
 </div>
 
 <script>
     let players = [
-        { id: 1, name: "Безумный Макс", points: 150, role: "winner" },
-        { id: 2, name: "Ночной Призрак", points: 120, role: "finalist" },
-        { id: 3, name: "Стальной Лис", points: 95, role: "finalist" },
-        { id: 4, name: "Гроза Арены", points: 70, role: "player" },
-        { id: 5, name: "Тайный Нео", points: 45, role: "player" }
+        { id: 1, name: "Безумный Макс", points: 150 },
+        { id: 2, name: "Ночной Призрак", points: 120 },
+        { id: 3, name: "Стальной Лис", points: 95 },
+        { id: 4, name: "Гроза Арены", points: 70 },
+        { id: 5, name: "Тайный Нео", points: 45 }
     ];
 
     const ROW_HEIGHT = 56; 
     const logoUrl = "https://4ak4ak.moy.su/logo1.jpg";
-
-    function getRoleBadge(role) {
-        if (role === "winner") return '<span class="badge badge-winner">Победитель</span>';
-        if (role === "finalist") return '<span class="badge badge-finalist">Финалист</span>';
-        return '';
-    }
 
     function initLeaderboard() {
         const list = document.getElementById('leaderboard');
@@ -169,10 +175,7 @@
                         <span class="rank-num">#${index + 1}</span>
                         <img src="${logoUrl}" class="rank-logo" alt="logo">
                     </div>
-                    <div class="player-name-wrapper">
-                        <span class="player-name">${player.name}</span>
-                        ${getRoleBadge(player.role)}
-                    </div>
+                    <span class="player-name">${player.name}</span>
                 </div>
                 <div class="player-points" id="points-${player.id}">${player.points}</div>
             `;
