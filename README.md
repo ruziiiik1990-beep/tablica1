@@ -2,244 +2,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Анимированная Таблица Лидеров</title>
+    <title>Интерактивный Слайдер с Анимацией</title>
+    <!-- Подключение Three.js и Anime.js -->
+    <script src="https://cloudflare.com"></script>
     <script src="https://cloudflare.com"></script>
     <style>
+        @font-face {
+            font-family: 'Gurlbones';
+            src: local('Gurlbones'), url('https://cdnfonts.com') format('woff');
+        }
+
         body {
-            background-color: #374151;
+            background-color: #374151; /* Тот самый темно-серый фон */
+            margin: 0;
+            padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #ffffff;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            height: 100vh;
         }
 
-        .leaderboard-container {
-            width: 100%;
-            max-width: 500px;
-            background: rgba(31, 41, 55, 0.7);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
+        /* Контейнер слайдера */
+        .slider-wrapper {
             position: relative;
+            width: 800px;
+            height: 500px;
+            background: rgba(31, 41, 55, 0.6);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            overflow: hidden;
         }
 
-        .table-header {
+        .slides-container {
             display: flex;
-            justify-content: space-between;
-            padding: 10px 15px;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 14px;
-            letter-spacing: 1px;
-            color: #9ca3af;
-            border-bottom: 2px solid #4b5563;
-            margin-bottom: 10px;
+            width: 200%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
         }
 
-        .leaderboard-list {
+        .slide {
+            width: 50%;
+            height: 100%;
             position: relative;
-            height: 280px; 
-            margin: 0;
-            padding: 0;
-            list-style: none;
+            box-sizing: border-box;
+            padding: 4px;
         }
 
-        .player-row {
+        /* Первый слайд: 3D-модель / векторная графика */
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Второй слайд: Карточка с белым фоном и iframe сзади */
+        .slide-content-two {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .background-iframe {
             position: absolute;
+            top: 0;
             left: 0;
             width: 100%;
-            height: 46px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 5px 15px;
-            background-color: transparent; /* Полностью прозрачный фон ячеек из прошлого запроса */
-            border-radius: 8px;
-            box-sizing: border-box;
+            height: 100%;
+            border: none;
+            z-index: 1;
         }
 
-        .player-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .white-card {
+            position: relative;
+            z-index: 2;
+            background: #ffffff;
+            color: #1f2937;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 400px;
         }
 
-        .rank-box {
+        /* Заголовок и элементы интерфейса */
+        .heading-frame-row {
+            position: absolute;
+            top: 20px;
+            left: 20px;
             display: flex;
             align-items: center;
-            gap: 8px; /* Отступ между номером и картинкой */
-            font-weight: bold;
-            font-size: 16px;
-            min-width: 65px;
+            gap: 10px;
+            z-index: 10;
         }
 
-        /* Настройки вашей единственной картинки у цифр */
-        .rank-logo {
-            width: 20px;
-            height: 20px;
+        .heading-frame-row h2 {
+            font-family: 'Gurlbones', sans-serif;
+            margin: 0;
+            font-size: 28px;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Картинка-логотип возле цифр (строго одна, не пропадает) */
+        .rank-logo-main {
+            width: 24px;
+            height: 24px;
             object-fit: contain;
             display: inline-block;
         }
 
-        .player-name {
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .player-points {
-            font-size: 16px;
+        .counter-display {
+            font-size: 20px;
             font-weight: bold;
-            color: #10b981;
-            padding: 4px 10px;
-            min-width: 40px;
-            text-align: right;
-        }
-
-        /* Всплывающие уведомления из вашей прошлой версии */
-        .notification {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #10b981;
-            color: white;
-            padding: 8px 16px;
+            background: rgba(0,0,0,0.4);
+            padding: 5px 12px;
             border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            pointer-events: none;
-            opacity: 0;
-            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
     </style>
 </head>
 <body>
 
-<div class="leaderboard-container">
-    <div class="table-header">
-        <span>Игрок</span>
-        <span>Очки</span>
+<div class="slider-wrapper">
+    <!-- Верхний блок с заголовком и картинкой-логотипом -->
+    <div class="heading-frame-row">
+        <div class="counter-display">
+            <span>Слайд:</span>
+            <img src="https://4ak4ak.moy.su/logo1.jpg" class="rank-logo-main" id="logo-img" alt="logo">
+            <span id="slide-num">1</span>
+        </div>
     </div>
-    <ul class="leaderboard-list" id="leaderboard"></ul>
-    <div class="notification" id="notification">Рейтинг обновлен!</div>
+
+    <!-- Основные слайды -->
+    <div class="slides-container" id="slidesContainer">
+        <!-- СЛАЙД 1: Векторная 3D анимация вращения -->
+        <div class="slide">
+            <div id="canvas-container"></div>
+        </div>
+
+        <!-- СЛАЙД 2: Iframe на фоне и белая карточка впереди -->
+        <div class="slide">
+            <div class="slide-content-two">
+                <iframe src="https://ruziiiik1990-beep.github.io/glavna9/" class="background-iframe"></iframe>
+                <div class="white-card">
+                    <h3 style="font-family: 'Gurlbones'; font-size: 24px;">Информационная панель</h3>
+                    <p>Интегрированный фрейм главной страницы успешно загружен на задний план.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    // Исходный массив игроков (без админки)
-    let players = [
-        { id: 1, name: "Безумный Макс", points: 150 },
-        { id: 2, name: "Ночной Призрак", points: 120 },
-        { id: 3, name: "Стальной Лис", points: 95 },
-        { id: 4, name: "Гроза Арены", points: 70 },
-        { id: 5, name: "Тайный Нео", points: 45 }
-    ];
+    // --- НАСТРОЙКА THREE.JS ДЛЯ КРИСТАЛЛИЧЕСКОЙ СТРУКТУРЫ (ЗОЛОТАЯ ГОРА) ---
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.z = 15;
 
-    const ROW_HEIGHT = 56; 
-    const logoUrl = "https://4ak4ak.moy.su/logo1.jpg"; // Ваша ссылка на логотип
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(800, 500);
+    container.appendChild(renderer.domElement);
 
-    // Первая отрисовка таблицы
-    function initLeaderboard() {
-        const list = document.getElementById('leaderboard');
-        list.innerHTML = '';
+    // Освещение (эффект лучей сверху)
+    const topLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    topLight.position.set(0, 10, 5).normalize();
+    scene.add(topLight);
+
+    const ambientLight = new THREE.AmbientLight(0x404040, 1.2);
+    scene.add(ambientLight);
+
+    // Создание группы объектов, имитирующей полигональную гору из хвороста/кристаллов
+    const objectGroup = new THREE.Group();
+    const geometry = new THREE.IcosahedronGeometry(0.6, 0); // Низкополигональные кристаллы
+    
+    // Золотой глянцевый материал
+    const material = new THREE.MeshStandardMaterial({
+        color: 0xd4af37,
+        roughness: 0.2,
+        metalness: 0.8,
+        flatShading: true
+    });
+
+    // Генерируем кучу элементов в форме пирамиды/горы
+    for (let i = 0; i < 60; i++) {
+        const mesh = new THREE.Mesh(geometry, material);
         
-        players.sort((a, b) => b.points - a.points);
-
-        players.forEach((player, index) => {
-            const li = document.createElement('li');
-            li.className = 'player-row';
-            li.setAttribute('data-id', player.id);
-            li.style.transform = `translateY(${index * ROW_HEIGHT}px)`;
-
-            li.innerHTML = `
-                <div class="player-info">
-                    <div class="rank-box">
-                        <span class="rank-num">#${index + 1}</span>
-                        <img src="${logoUrl}" class="rank-logo" alt="logo">
-                    </div>
-                    <span class="player-name">${player.name}</span>
-                </div>
-                <div class="player-points" id="points-${player.id}">${player.points}</div>
-            `;
-            list.appendChild(li);
-        });
+        // Распределение по форме горы
+        const layer = Math.floor(i / 15); 
+        const radius = 2.5 - layer * 0.5;
+        const theta = Math.random() * Math.PI * 2;
+        
+        mesh.position.set(
+            Math.cos(theta) * Math.random() * radius,
+            (layer * 0.8) - 1.5,
+            Math.sin(theta) * Math.random() * radius
+        );
+        
+        mesh.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+        mesh.scale.setScalar(Math.random() * 0.5 + 0.6);
+        objectGroup.add(mesh);
     }
+    
+    scene.add(objectGroup);
 
-    // Плавное перемещение строк вверх/вниз при изменении позиций
-    function updatePositions() {
-        const sorted = [...players].sort((a, b) => b.points - a.points);
-        let wasPositionChanged = false;
+    // Анимация вращения на 360 градусов при помощи Anime.js
+    anime({
+        targets: objectGroup.rotation,
+        y: Math.PI * 2,
+        duration: 12000,
+        easing: 'linear',
+        loop: true
+    });
 
-        sorted.forEach((player, newIndex) => {
-            const row = document.querySelector(`.player-row[data-id="${player.id}"]`);
-            if (row) {
-                const currentRankText = row.querySelector('.rank-num').innerText;
-                const expectedRankText = `#${newIndex + 1}`;
-
-                if (currentRankText !== expectedRankText) {
-                    row.querySelector('.rank-num').innerText = expectedRankText;
-                    wasPositionChanged = true;
-                }
-
-                // Анимация передвижения строки на ее новое место по вертикали
-                anime({
-                    targets: row,
-                    translateY: newIndex * ROW_HEIGHT,
-                    duration: 600,
-                    easing: 'easeInOutQuad'
-                });
-            }
-        });
-
-        // Если кто-то кого-то обогнал — показываем всплывающее уведомление
-        if (wasPositionChanged) {
-            showNotification();
-        }
+    // Рендер-цикл Three.js
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
     }
+    animate();
 
-    function showNotification() {
+
+    // --- НЕЗАВИСИМАЯ СМЕНА СЛАЙДОВ (КАЖДЫЕ 10 СЕКУНД) ---
+    let currentSlide = 0;
+    const slidesContainer = document.getElementById('slidesContainer');
+    const slideNumDisplay = document.getElementById('slide-num');
+
+    setInterval(() => {
+        currentSlide = currentSlide === 0 ? 1 : 0;
+        
+        // Сдвиг контейнера слайдов
+        slidesContainer.style.transform = `translateX(-${currentSlide * 50}%)`;
+        slideNumDisplay.innerText = currentSlide + 1;
+
+        // Одновременная плавная анимация появления элементов через Anime.js при смене слайда
         anime({
-            targets: '#notification',
+            targets: ['.white-card', '#canvas-container'],
             opacity:,
-            translateY: [20, 0, -20],
-            duration: 1500,
-            easing: 'easeOutExpo'
+            scale: [0.95, 1],
+            duration: 600,
+            easing: 'easeOutQuad'
         });
-    }
 
-    // Бесконечный цикл автоматического начисления очков (каждые 3 секунды)
-    function startSimulation() {
-        setInterval(() => {
-            const randomPlayerIndex = Math.floor(Math.random() * players.length);
-            const addedPoints = Math.floor(Math.random() * 20) + 10;
-            
-            players[randomPlayerIndex].points += addedPoints;
+    }, 10000); // Строго 10 секунд на один слайд
 
-            const player = players[randomPlayerIndex];
-            const pointsElement = document.getElementById(`points-${player.id}`);
-            
-            if (pointsElement) {
-                pointsElement.innerText = player.points;
-                
-                // Пульсация цифр очков
-                anime({
-                    targets: pointsElement,
-                    scale: [1, 1.2, 1],
-                    duration: 300,
-                    easing: 'easeOutSine'
-                });
-            }
-
-            updatePositions();
-        }, 3000);
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        initLeaderboard();
-        startSimulation();
+    // Обработка изменения размеров окна
+    window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
     });
 </script>
 
