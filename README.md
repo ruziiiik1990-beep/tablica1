@@ -2,24 +2,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Таблица Рейтинга</title>
-    <!-- Библиотека Anime.js для перемещения строк -->
+    <!-- Библиотека Anime.js для плавного перемещения строк -->
     <script src="https://cloudflare.com"></script>
     <style>
-        /* ГЛОБАЛЬНАЯ ЗАЧИСТКА ХОСТИНГА: уничтожаем любые внешние линии, заголовки и разделители */
-        header, footer, hr, .markdown-body hr, #header, #footer {
+        /* ==========================================================================
+           ЖЕСТКАЯ ЗАЧИСТКА СТИЛЕЙ GITHUB PAGES (Удаление белой полосы и сброс темы)
+           ========================================================================== */
+        header, footer, hr, .markdown-body hr, #header, #footer,
+        .markdown-body::before, .markdown-body::after, .position-relative::after {
             display: none !important;
             border: none !important;
             height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
             opacity: 0 !important;
+            box-shadow: none !important;
         }
 
-        /* Полностью перекрываем фон страницы, чтобы скрыть разметку темы GitHub */
+        /* Полный сброс контейнера markdown-body, который создает рамки и линии */
+        .markdown-body {
+            padding: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            max-width: none !important;
+        }
+
+        /* Полный сброс фона страницы, перекрывающий разметку темы GitHub */
         html, body {
             background-color: #374151 !important; /* Твой оригинальный темно-серый фон */
             margin: 0 !important;
             padding: 0 !important;
-            width: 100%;
-            height: 100vh;
+            width: 100% !important;
+            height: 100vh !important;
         }
 
         body { 
@@ -31,25 +46,26 @@
             perspective: 1000px; 
         }
 
-        /* Контейнер-обертка для 3D наклона */
+        /* Контейнер-обертка для 3D наклона карточки */
         .table-wrapper-3d { 
             width: 100%; 
             max-width: 650px; 
             transition: transform 0.1s ease-out; 
             transform-style: preserve-3d; 
             cursor: pointer;
+            border-top: none !important; /* Гарантия отсутствия рамки сверху */
         }
 
         .table-container { 
             width: 100%; 
-            background: #465a8a; /* Сине-голубой цвет карточки */
+            background: #465a8a; /* Сине-голубой цвет карточки со скриншота */
             border-radius: 16px; 
             padding: 20px; 
             box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
             box-sizing: border-box; 
         }
 
-        /* Шапка таблицы */
+        /* Шапка таблицы — заголовков и полосок над ней больше нет */
         .table-header { 
             display: grid; 
             grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr; 
@@ -68,7 +84,7 @@
 
         .leaderboard-list { 
             position: relative; 
-            height: 315px; 
+            height: 315px; /* Высота под 7 строк (7 игроков * 45px) */
             margin: 0; 
             padding: 0; 
             list-style: none; 
@@ -81,7 +97,7 @@
             transform: translateZ(20px); 
         }
 
-        /* Строка игрока */
+        /* Строка игрока с поддержкой абсолютного смещения */
         .player-row { 
             position: absolute; 
             left: 0; 
@@ -103,12 +119,12 @@
         .col-rank { color: #9ca3af; font-weight: bold; transform: translateZ(15px); transition: color 0.3s; }
         .col-name { font-weight: bold; transform: translateZ(25px); }
         
-        /* Стили для топ-3 мест */
+        /* Стили подсветки металлов для топ-3 мест */
         .rank-gold { color: #ffd700 !important; text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
         .rank-silver { color: #c0c0c0 !important; text-shadow: 0 0 8px rgba(192, 192, 192, 0.4); }
         .rank-bronze { color: #cd7f32 !important; text-shadow: 0 0 8px rgba(205, 127, 50, 0.4); }
 
-        /* Цвета ников */
+        /* Цвета ников по твоему макету */
         .player-row[data-name="45"] .col-name { color: #f59e0b; }
         .player-row[data-name="qweqwe"] .col-name { color: #ed8936; }
         
@@ -145,7 +161,7 @@
     const ROW_HEIGHT = 45;
     const logoUrl = "https://4ak4ak.moy.su/logo1.jpg";
 
-    // Функция жесткой очистки страницы от мусора хостинга и генерации автоматических линий
+    // Функция жесткой зачистки текстового мусора и внешних блоков хостинга в DOM
     function cleanExternalLayout() {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
@@ -219,23 +235,3 @@
 
             const chakEl = document.getElementById(`chak-${p.id}`);
             if (chakEl) {
-                chakEl.querySelector('.chak-value').innerText = p.chak;
-                anime({ targets: chakEl, scale: [1, 1.25, 1], duration: 300, easing: 'easeOutSine' });
-            }
-            updatePositions();
-        }, 3500);
-    }
-
-    const card = document.getElementById('card3d');
-    card.addEventListener('mousemove', (e) => {
-        const r = card.getBoundingClientRect();
-        const rotateX = ((r.height / 2) - (e.clientY - r.top)) / 10;
-        const rotateY = ((e.clientX - r.left) - (r.width / 2)) / 15;
-        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    });
-    card.addEventListener('mouseleave', () => card.style.transform = 'rotateX(0deg) rotateY(0deg)');
-
-    document.addEventListener("DOMContentLoaded", () => { initLeaderboard(); cleanExternalLayout(); startSimulation(); });
-</script>
-</body>
-</html>
