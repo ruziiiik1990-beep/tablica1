@@ -1,10 +1,19 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Таблица Рейтинга</title>
-    <!-- Подключаем библиотеку Anime.js -->
+    <!-- Библиотека Anime.js для перемещения строк -->
     <script src="https://cloudflare.com"></script>
     <style>
+        /* Принудительно уничтожаем любые горизонтальные линии и рамки сверху на странице */
+        hr, border, .separator, ::before, ::after {
+            display: none !important;
+            border: none !important;
+            height: 0 !important;
+            opacity: 0 !important;
+        }
+
         body { 
             background-color: #374151; 
             font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; 
@@ -16,13 +25,17 @@
             margin: 0; 
             perspective: 1000px; 
         }
+
+        /* Контейнер-обертка для 3D наклона */
         .table-wrapper-3d { 
             width: 100%; 
             max-width: 650px; 
             transition: transform 0.1s ease-out; 
             transform-style: preserve-3d; 
-            cursor: pointer; 
+            cursor: pointer;
+            border-top: none !important; /* Убираем возможную рамку сверху */
         }
+
         .table-container { 
             width: 100%; 
             background: #465a8a; 
@@ -31,6 +44,8 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
             box-sizing: border-box; 
         }
+
+        /* Самый верхний элемент таблицы — шапка, никаких заголовков и линий */
         .table-header { 
             display: grid; 
             grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr; 
@@ -46,6 +61,7 @@
             border-top-right-radius: 8px; 
             transform: translateZ(30px); 
         }
+
         .leaderboard-list { 
             position: relative; 
             height: 315px; 
@@ -60,6 +76,8 @@
             overflow: hidden; 
             transform: translateZ(20px); 
         }
+
+        /* Строка игрока с поддержкой анимации движения */
         .player-row { 
             position: absolute; 
             left: 0; 
@@ -77,13 +95,20 @@
             will-change: transform; 
             transform-style: preserve-3d; 
         }
+
         .col-rank { color: #9ca3af; font-weight: bold; transform: translateZ(15px); }
         .col-name { font-weight: bold; transform: translateZ(25px); }
+        
+        /* Цвета ников по твоему макету */
         .player-row[data-name="45"] .col-name { color: #f59e0b; }
         .player-row[data-name="qweqwe"] .col-name { color: #ed8936; }
+        
         .col-champ, .col-finalist { color: #ed8936; font-weight: bold; transform: translateZ(15px); }
+        
+        /* Чак-чак с белой подложкой */
         .col-chak { display: flex; align-items: center; justify-content: center; gap: 6px; color: #eab308; font-weight: bold; font-size: 16px; transform: translateZ(35px); }
         .chak-icon { width: 20px; height: 20px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 1px; }
+        
         .table-footer-text { text-align: center; font-size: 11px; color: #9ca3af; margin-top: 15px; transform: translateZ(10px); }
     </style>
 </head>
@@ -111,6 +136,7 @@
     const ROW_HEIGHT = 45;
     const logoUrl = "https://4ak4ak.moy.su/logo1.jpg";
 
+    // Очистка от внешних надписей хостинга
     function removeExternalLabels() {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
@@ -136,6 +162,7 @@
         });
     }
 
+    // Перемещение всей строки по вертикали на базе Anime.js
     function updatePositions() {
         const sorted = [...players].sort((a, b) => b.chak - a.chak);
         sorted.forEach((p, newIndex) => {
@@ -165,6 +192,7 @@
         }, 3500);
     }
 
+    // Логика объемного 3D наклона карточки
     const card = document.getElementById('card3d');
     card.addEventListener('mousemove', (e) => {
         const r = card.getBoundingClientRect();
