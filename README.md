@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -27,17 +28,7 @@
             box-sizing: border-box;
         }
 
-        /* Новый измененный заголовок сверху */
-        .table-title {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            color: #3b82f6; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-        }
-
+        /* Шапка таблицы — теперь это самый верхний элемент структуры */
         .table-header {
             display: grid;
             grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr;
@@ -132,9 +123,7 @@
 <body>
 
 <div class="table-container">
-    <!-- Текст успешно заменен на Таблица Рейтинга -->
-    <div class="table-title">Таблица Рейтинга</div>
-    
+    <!-- Все заголовки окончательно вырезаны отсюда -->
     <div class="table-header">
         <div>#</div>
         <div>Игрок</div>
@@ -174,7 +163,7 @@
 
     let players = generateRandomPlayers();
     const ROW_HEIGHT = 45; 
-    const logoUrl = "https://moy.su";
+    const logoUrl = "https://4ak4ak.moy.su/logo1.jpg";
 
     function removeExternalLabels() {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
