@@ -18,20 +18,22 @@
         .card:hover { border-color:rgba(59,130,246,0.6); }
         .title { width:100%; transition:transform 0.5s ease; transform:translate3d(0%, 0px, 0px); }
         .card:hover .title { transform:translate3d(0%, -30px, 80px); }
-        .text-line-container { display:flex; flex-direction:column; align-items:center; position:relative; width:100%; }
-        .main-header-title { text-align:center; font-size:22px; font-weight:800; color:#3b82f6; text-transform:uppercase; letter-spacing:1.5px; text-shadow:0 0 10px rgba(59,130,246,0.5); transform:translateZ(40px); }
-        .svg-line { width:100%; height:4px; margin-top:8px; display:block; }
-        .line-path { stroke:#3b82f6; stroke-width:2; fill:none; stroke-dasharray:1000; stroke-dashoffset:1000; }
-        table { width:100%; border-collapse:collapse; text-align:center; color:#fff; background:#13151c !important; margin-top:15px; }
+        
+        /* Стили для посимвольной анимации букв */
+        .animated-text { display: flex; justify-content: center; flex-wrap: wrap; }
+        .letter { display: inline-block; opacity: 0; transform: translateY(10px) scale(0.8); }
+        
+        .main-header-title { font-size:22px; font-weight:800; color:#3b82f6; text-transform:uppercase; letter-spacing:1.5px; text-shadow:0 0 10px rgba(59,130,246,0.5); transform:translateZ(40px); margin-bottom:25px; }
+        table { width:100%; border-collapse:collapse; text-align:center; color:#fff; background:#13151c !important; }
         th { font-size:13px; color:#94a3b8; letter-spacing:1px; padding-bottom:10px; text-transform:uppercase; border-bottom:2px solid rgba(255,255,255,0.1); }
         td { padding:12px 5px; font-size:15px; font-weight:500; background:#13151c !important; }
-        tr { border-bottom:1px solid rgba(255,255,255,0.05); background:#13151c !important; }
+        tr { border-bottom:1px solid rgba(255, 255, 255, 0.05); background:#13151c !important; }
         .rank { color:#94a3b8; font-weight:bold; }
         .gold { color:#facc15; text-shadow:0 0 8px rgba(250,204,21,0.3); }
         .orange { color:#f97316; }
         .chak-icon { display:inline-flex; align-items:center; justify-content:center; gap:6px; color:#facc15; vertical-align:middle; }
         .chak-img { width:20px; height:20px; object-fit:contain; border-radius:50%; background:#fff !important; padding:1px; display:inline-block; }
-        .footer-text { text-align:center; font-size:12px; color:#576575; letter-spacing:0.5px; }
+        .footer-text { font-size:12px; color:#576575; letter-spacing:0.5px; margin-top:20px; }
     </style>
 </head>
 <body>
@@ -39,10 +41,9 @@
 <div class="card" id="tableCard">
     <div class="wrapper"></div>
     <div class="title">
-        <div class="text-line-container" style="margin-bottom:25px;">
-            <div class="main-header-title">Таблица Рейтинга</div>
-            <svg class="svg-line"><path class="line-path" d="M 0 2 L 650 2" /></svg>
-        </div>
+        <!-- Буквы будут разбиты и анимированы скриптом -->
+        <div class="main-header-title animated-text" id="headerText">Таблица Рейтинга</div>
+
         <table>
             <thead>
                 <tr>
@@ -84,23 +85,51 @@
                 </tr>
             </tbody>
         </table>
-        <div class="text-line-container" style="margin-top:20px;">
-            <div class="footer-text">Победитель финала +2 чак-чака · Финалист +1 чак-чак</div>
-            <svg class="svg-line" style="margin-top:5px;"><path class="line-path" d="M 150 2 L 500 2" /></svg>
-        </div>
+        
+        <div class="footer-text animated-text" id="footerText">Победитель финала +2 чак-чака · Финалист +1 чак-чак</div>
     </div>
 </div>
 
 <script>
-    function animateLines() {
-        anime({ targets: '.line-path', strokeDashoffset: [anime.setDashoffset, 0], easing: 'easeInOutQuad', duration: 2000, delay: anime.stagger(150), loop: true, direction: 'alternate' });
+    // Автоматически разбивает строку на отдельные буквы для stagger-эффекта
+    function prepareText(elementId) {
+        const el = document.getElementById(elementId);
+        const text = el.innerText;
+        el.innerHTML = '';
+        [...text].forEach(char => {
+            const span = document.createElement('span');
+            span.className = 'letter';
+            // Если пробел — сохраняем его структуру
+            span.innerHTML = char === ' ' ? '&nbsp;' : char;
+            el.appendChild(span);
+        });
     }
+
+    // Тот самый эффект draw и stagger для букв (адаптированный под синтаксис браузера)
+    function animateTextLetters() {
+        anime({
+            targets: '.letter',
+            opacity:,
+            translateY:,
+            scale: [0.8, 1],
+            easing: 'easeOutQuad', // Твой тип сглаживания inOutQuad / easeOutQuad
+            duration: 800,
+            delay: anime.stagger(100), // Твоя задержка между буквами delay: stagger(100)
+            loop: false
+        });
+    }
+
     const card = document.getElementById('tableCard');
     window.addEventListener('mousemove', (e) => {
         card.style.transform = `rotateX(${-((e.clientY / window.innerHeight) - 0.5) * 30}deg) rotateY(${((e.clientX / window.innerWidth) - 0.5) * 30}deg)`;
     });
     card.addEventListener('mouseleave', () => { card.style.transform = `rotateX(0deg) rotateY(0deg)`; });
-    document.addEventListener("DOMContentLoaded", () => { animateLines(); });
+
+    document.addEventListener("DOMContentLoaded", () => { 
+        prepareText('headerText');
+        prepareText('footerText');
+        animateTextLetters(); 
+    });
 </script>
 </body>
 </html>
