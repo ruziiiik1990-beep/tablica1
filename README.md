@@ -1,266 +1,257 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интерактивный Слайдер с Анимацией</title>
-    <!-- Подключение Three.js и Anime.js -->
-    <script src="https://cloudflare.com"></script>
+    <title>Турнирная Таблица Чак-Чак</title>
+    <!-- Подключаем Anime.js для плавных перемещений -->
     <script src="https://cloudflare.com"></script>
     <style>
-        @font-face {
-            font-family: 'Gurlbones';
-            src: local('Gurlbones'), url('https://cdnfonts.com') format('woff');
+        body {
+            background-color: #374151; /* Твой темно-серый фон */
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
         }
 
-        body {
-            background-color: #374151; /* Тот самый темно-серый фон */
+        .leaderboard-wrapper {
+            width: 100%;
+            max-width: 550px;
+            background: rgba(31, 41, 55, 0.7);
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(10px);
+        }
+
+        .table-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #f59e0b; /* Золотистый цвет чак-чака */
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: #9ca3af;
+            border-bottom: 2px solid #4b5563;
+            margin-bottom: 15px;
+        }
+
+        .leaderboard-list {
+            position: relative;
+            height: 280px; /* Высота под 5 игроков */
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #ffffff;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            list-style: none;
         }
 
-        /* Контейнер слайдера */
-        .slider-wrapper {
-            position: relative;
-            width: 800px;
-            height: 500px;
-            background: rgba(31, 41, 55, 0.6);
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(12px);
-            overflow: hidden;
-        }
-
-        .slides-container {
-            display: flex;
-            width: 200%;
-            height: 100%;
-            transition: transform 0.5s ease-in-out;
-        }
-
-        .slide {
-            width: 50%;
-            height: 100%;
-            position: relative;
-            box-sizing: border-box;
-            padding: 4px;
-        }
-
-        /* Первый слайд: 3D-модель / векторная графика */
-        #canvas-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        /* Второй слайд: Карточка с белым фоном и iframe сзади */
-        .slide-content-two {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .background-iframe {
+        .player-row {
             position: absolute;
-            top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            border: none;
-            z-index: 1;
-        }
-
-        .white-card {
-            position: relative;
-            z-index: 2;
-            background: #ffffff;
-            color: #1f2937;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            text-align: center;
-            max-width: 400px;
-        }
-
-        /* Заголовок и элементы интерфейса */
-        .heading-frame-row {
-            position: absolute;
-            top: 20px;
-            left: 20px;
+            height: 50px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            z-index: 10;
+            justify-content: space-between;
+            padding: 5px 15px;
+            background-color: transparent; /* Прозрачный фон ячеек */
+            border-radius: 8px;
+            box-sizing: border-box;
         }
 
-        .heading-frame-row h2 {
-            font-family: 'Gurlbones', sans-serif;
-            margin: 0;
-            font-size: 28px;
-            color: #ffffff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        /* Картинка-логотип возле цифр (строго одна, не пропадает) */
-        .rank-logo-main {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-            display: inline-block;
-        }
-
-        .counter-display {
-            font-size: 20px;
-            font-weight: bold;
-            background: rgba(0,0,0,0.4);
-            padding: 5px 12px;
-            border-radius: 20px;
+        .rank-box {
             display: flex;
             align-items: center;
             gap: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            min-width: 70px;
+        }
+
+        /* Твоя картинка чак-чака — строго одна возле цифр */
+        .rank-logo {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            display: inline-block;
+            border-radius: 4px;
+        }
+
+        .player-name-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Бейджи статусов: Победитель и Финалист */
+        .badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-winner {
+            background-color: #f59e0b;
+            color: #1f2937;
+        }
+
+        .badge-finalist {
+            background-color: #3b82f6;
+            color: #ffffff;
+        }
+
+        .player-points {
+            font-size: 16px;
+            font-weight: bold;
+            color: #10b981;
+            min-width: 50px;
+            text-align: right;
         }
     </style>
 </head>
 <body>
 
-<div class="slider-wrapper">
-    <!-- Верхний блок с заголовком и картинкой-логотипом -->
-    <div class="heading-frame-row">
-        <div class="counter-display">
-            <span>Слайд:</span>
-            <img src="https://4ak4ak.moy.su/logo1.jpg" class="rank-logo-main" id="logo-img" alt="logo">
-            <span id="slide-num">1</span>
-        </div>
+<div class="leaderboard-wrapper">
+    <div class="table-title">Турнир Чак-Чак</div>
+    <div class="table-header">
+        <span>Игрок</span>
+        <span>Очки</span>
     </div>
-
-    <!-- Основные слайды -->
-    <div class="slides-container" id="slidesContainer">
-        <!-- СЛАЙД 1: Векторная 3D анимация вращения -->
-        <div class="slide">
-            <div id="canvas-container"></div>
-        </div>
-
-        <!-- СЛАЙД 2: Iframe на фоне и белая карточка впереди -->
-        <div class="slide">
-            <div class="slide-content-two">
-                <iframe src="https://ruziiiik1990-beep.github.io/glavna9/" class="background-iframe"></iframe>
-                <div class="white-card">
-                    <h3 style="font-family: 'Gurlbones'; font-size: 24px;">Информационная панель</h3>
-                    <p>Интегрированный фрейм главной страницы успешно загружен на задний план.</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <ul class="leaderboard-list" id="leaderboard">
+        <!-- Генерируется скриптом -->
+    </ul>
 </div>
 
 <script>
-    // --- НАСТРОЙКА THREE.JS ДЛЯ КРИСТАЛЛИЧЕСКОЙ СТРУКТУРЫ (ЗОЛОТАЯ ГОРА) ---
-    const container = document.getElementById('canvas-container');
-    const scene = new THREE.Scene();
-    
-    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.z = 15;
+    // Исходный массив игроков со статусами Победителя и Финалистов
+    let players = [
+        { id: 1, name: "Безумный Макс", points: 150, role: "winner" },
+        { id: 2, name: "Ночной Призрак", points: 120, role: "finalist" },
+        { id: 3, name: "Стальной Лис", points: 95, role: "finalist" },
+        { id: 4, name: "Гроза Арены", points: 70, role: "player" },
+        { id: 5, name: "Тайный Нео", points: 45, role: "player" }
+    ];
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(800, 500);
-    container.appendChild(renderer.domElement);
+    const ROW_HEIGHT = 56; 
+    const logoUrl = "https://4ak4ak.moy.su/logo1.jpg"; // Твой логотип чак-чака
 
-    // Освещение (эффект лучей сверху)
-    const topLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    topLight.position.set(0, 10, 5).normalize();
-    scene.add(topLight);
-
-    const ambientLight = new THREE.AmbientLight(0x404040, 1.2);
-    scene.add(ambientLight);
-
-    // Создание группы объектов, имитирующей полигональную гору из хвороста/кристаллов
-    const objectGroup = new THREE.Group();
-    const geometry = new THREE.IcosahedronGeometry(0.6, 0); // Низкополигональные кристаллы
-    
-    // Золотой глянцевый материал
-    const material = new THREE.MeshStandardMaterial({
-        color: 0xd4af37,
-        roughness: 0.2,
-        metalness: 0.8,
-        flatShading: true
-    });
-
-    // Генерируем кучу элементов в форме пирамиды/горы
-    for (let i = 0; i < 60; i++) {
-        const mesh = new THREE.Mesh(geometry, material);
-        
-        // Распределение по форме горы
-        const layer = Math.floor(i / 15); 
-        const radius = 2.5 - layer * 0.5;
-        const theta = Math.random() * Math.PI * 2;
-        
-        mesh.position.set(
-            Math.cos(theta) * Math.random() * radius,
-            (layer * 0.8) - 1.5,
-            Math.sin(theta) * Math.random() * radius
-        );
-        
-        mesh.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
-        mesh.scale.setScalar(Math.random() * 0.5 + 0.6);
-        objectGroup.add(mesh);
+    // Функция генерации бейджа статуса
+    function getRoleBadge(role) {
+        if (role === "winner") return '<span class="badge badge-winner">Победитель</span>';
+        if (role === "finalist") return '<span class="badge badge-finalist">Финалист</span>';
+        return '';
     }
-    
-    scene.add(objectGroup);
 
-    // Анимация вращения на 360 градусов при помощи Anime.js
-    anime({
-        targets: objectGroup.rotation,
-        y: Math.PI * 2,
-        duration: 12000,
-        easing: 'linear',
-        loop: true
-    });
-
-    // Рендер-цикл Three.js
-    function animate() {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-    }
-    animate();
-
-
-    // --- НЕЗАВИСИМАЯ СМЕНА СЛАЙДОВ (КАЖДЫЕ 10 СЕКУНД) ---
-    let currentSlide = 0;
-    const slidesContainer = document.getElementById('slidesContainer');
-    const slideNumDisplay = document.getElementById('slide-num');
-
-    setInterval(() => {
-        currentSlide = currentSlide === 0 ? 1 : 0;
+    // Первичный вывод таблицы на экран
+    function initLeaderboard() {
+        const list = document.getElementById('leaderboard');
+        list.innerHTML = '';
         
-        // Сдвиг контейнера слайдов
-        slidesContainer.style.transform = `translateX(-${currentSlide * 50}%)`;
-        slideNumDisplay.innerText = currentSlide + 1;
+        // Сортируем по очкам
+        players.sort((a, b) => b.points - a.points);
 
-        // Одновременная плавная анимация появления элементов через Anime.js при смене слайда
-        anime({
-            targets: ['.white-card', '#canvas-container'],
-            opacity:,
-            scale: [0.95, 1],
-            duration: 600,
-            easing: 'easeOutQuad'
+        players.forEach((player, index) => {
+            const li = document.createElement('li');
+            li.className = 'player-row';
+            li.setAttribute('data-id', player.id);
+            li.style.transform = `translateY(${index * ROW_HEIGHT}px)`;
+
+            li.innerHTML = `
+                <div class="player-info">
+                    <div class="rank-box">
+                        <span class="rank-num">#${index + 1}</span>
+                        <img src="${logoUrl}" class="rank-logo" alt="чак-чак">
+                    </div>
+                    <div class="player-name-wrapper">
+                        <span class="player-name">${player.name}</span>
+                        ${getRoleBadge(player.role)}
+                    </div>
+                </div>
+                <div class="player-points" id="points-${player.id}">${player.points}</div>
+            `;
+            list.appendChild(li);
         });
+    }
 
-    }, 10000); // Строго 10 секунд на один слайд
+    // Перемещение игроков по вертикали при изменении мест
+    function updatePositions() {
+        const sorted = [...players].sort((a, b) => b.points - a.points);
 
-    // Обработка изменения размеров окна
-    window.addEventListener('resize', () => {
-        camera.aspect = container.clientWidth / container.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
+        sorted.forEach((player, newIndex) => {
+            const row = document.querySelector(`.player-row[data-id="${player.id}"]`);
+            if (row) {
+                // Обновляем текст номера позиции
+                row.querySelector('.rank-num').innerText = `#${newIndex + 1}`;
+
+                // Анимируем физический сдвиг строки вверх или вниз
+                anime({
+                    targets: row,
+                    translateY: newIndex * ROW_HEIGHT,
+                    duration: 600,
+                    easing: 'easeInOutQuad'
+                });
+            }
+        });
+    }
+
+    // Бесконечный цикл симуляции начисления очков (каждые 3 секунды)
+    function startSimulation() {
+        setInterval(() => {
+            const randomPlayerIndex = Math.floor(Math.random() * players.length);
+            const addedPoints = Math.floor(Math.random() * 25) + 10; // +10-35 очков
+            
+            players[randomPlayerIndex].points += addedPoints;
+
+            const player = players[randomPlayerIndex];
+            const pointsElement = document.getElementById(`points-${player.id}`);
+            
+            if (pointsElement) {
+                pointsElement.innerText = player.points;
+                
+                // Пульсация очков в момент начисления
+                anime({
+                    targets: pointsElement,
+                    scale: [1, 1.2, 1],
+                    duration: 300,
+                    easing: 'easeOutSine'
+                });
+            }
+
+            // Перестраиваем позиции строк
+            updatePositions();
+        }, 3000);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initLeaderboard();
+        startSimulation();
     });
 </script>
 
