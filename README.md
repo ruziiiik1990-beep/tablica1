@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Турнирная Таблица ЧакЧак — Фикс Заголовка GitHub</title>
+    <title>Турнирная Таблица ЧакЧак — Фикс Картинок</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -17,8 +18,8 @@
             perspective: 1000px; /* Включаем 3D-пространство для эффектов */
         }
         
-        /* ИСПРАВЛЕНО: Скрываем заголовок h1 (tablica1), приходящий с GitHub */
-        .title h1, #tablica1, .tablica1, h1 {
+        /* ИСПРАВЛЕНО: Скрытие заголовка Гитхаба теперь полностью изолировано и не трогает картинки таблицы */
+        h1, .title h1, #tablica1, .tablica1 {
             display: none !important;
             visibility: hidden !important;
             opacity: 0 !important;
@@ -68,7 +69,7 @@
         }
 
         .wrapper::before { top: -5px; height: 5px; }
-        .wrapper::after { bottom: -5px; height: 5px; }
+        .wrapper::after { bottom: -5px; height: 120px; }
 
         /* Зажигаем неон при наведении */
         .card:hover .wrapper::before, 
@@ -143,10 +144,13 @@
             background: #13151c !important;
         }
         
+        /* ИСПРАВЛЕНО: Защищенные стили видимости картинок с принудительным приоритетом visible */
         .chak-img {
-            width: 16px;
-            height: 16px;
-            display: inline-block;
+            width: 16px !important;
+            height: 16px !important;
+            display: inline-block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
             border-radius: 4px;
         }
 
@@ -184,49 +188,49 @@
                     <td class="gold">X-Slayer_99</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" loading="lazy" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">2</td>
                     <td>Neon_Viper</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" loading="lazy" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">3</td>
                     <td class="orange">Chak_Master</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" loading="lazy" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">4</td>
                     <td>Cyber_Glitch</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" loading="lazy" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">5</td>
                     <td>Zeus_Awper</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">6</td>
                     <td>Shadow_Step</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">7</td>
                     <td>Bullet_Rain</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" loading="lazy" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
             </tbody>
         </table>
