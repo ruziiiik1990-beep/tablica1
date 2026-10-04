@@ -1,239 +1,231 @@
-
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Финал - Слайдер с Эффектами</title>
-    <!-- Подключаем Swiper CSS и Anime.js -->
-    <link rel="stylesheet" href="https://jsdelivr.net" />
+    <title>Таблица Лидеров</title>
     <script src="https://cloudflare.com"></script>
     <style>
         body {
-            background-color: #374151; /* Тот самый рабочий темно-серый фон */
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
-            color: #ffffff;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .slider-section {
-            width: 100%;
-            max-width: 850px;
-            height: 550px;
-            position: relative;
-        }
-
-        .swiper {
-            width: 100%;
-            height: 100%;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        /* Общие стили для слайдов-карточек */
-        .promo-card {
-            position: relative;
-            background: #2563eb; /* Базовый синий для первого слайда */
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box;
-        }
-
-        .promo-card-content {
-            text-align: center;
-            padding: 40px;
-            z-index: 5;
-            max-width: 500px;
-        }
-
-        .promo-card-content h2 {
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-
-        /* --- ВТОРОЙ СЛАЙД: СЛОИ И IFRAME --- */
-        .slide-iframe-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             background-color: #374151;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
         }
 
-        /* iframe строго ЗА белой карточкой */
-        .background-iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .leaderboard-container {
             width: 100%;
-            height: 100%;
-            border: none;
-            z-index: 1; /* Самый нижний слой внутри слайда */
-            pointer-events: none; /* Чтобы не мешал наведению на карточку */
-        }
-
-        /* Белая карточка ПОВЕРХ iframe */
-        .white-card-overlay {
-            position: relative;
-            z-index: 2; /* Слой выше iframe */
-            background: #ffffff;
-            color: #1f2937;
-            padding: 35px;
+            max-width: 500px;
+            background: rgba(31, 41, 55, 0.7);
             border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            text-align: center;
-            max-width: 420px;
-            transform-style: preserve-3d;
-            perspective: 1000px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
         }
 
-        /* Фиксированный логотип, чтобы не исчезал */
-        .fixed-weapon-logo {
-            width: 32px;
-            height: 32px;
-            object-fit: contain;
-            display: inline-block;
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+            color: #9ca3af;
+            border-bottom: 2px solid #4b5563;
             margin-bottom: 10px;
         }
 
-        /* Навигация слайдера */
-        .promo-slider-controls {
+        .leaderboard-list {
+            position: relative;
+            height: 280px; 
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .player-row {
             position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            width: 100%;
+            height: 46px;
             display: flex;
             align-items: center;
-            gap: 20px;
-            z-index: 10;
-            background: rgba(0,0,0,0.5);
-            padding: 8px 16px;
-            border-radius: 20px;
+            justify-content: space-between;
+            padding: 5px 15px;
+            background-color: transparent;
+            border-radius: 8px;
+            box-sizing: border-box;
         }
 
-        .swiper-btn {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 18px;
+        .player-info {
             display: flex;
             align-items: center;
+            gap: 12px;
         }
 
-        .promo-slider-fraction {
+        .rank-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 16px;
+            min-width: 65px;
+        }
+
+        .rank-logo {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            display: inline-block;
+        }
+
+        .player-name-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-winner {
+            background-color: #f59e0b;
+            color: #1f2937;
+        }
+
+        .badge-finalist {
+            background-color: #3b82f6;
+            color: #ffffff;
+        }
+
+        .player-points {
+            font-size: 16px;
+            font-weight: bold;
+            color: #10b981;
+            padding: 4px 10px;
+            min-width: 40px;
+            text-align: right;
         }
     </style>
 </head>
 <body>
 
-<div class="slider-section">
-    <div class="swiper promo-slider">
-        <div class="swiper-wrapper">
-            
-            <!-- СЛАЙД 1: Промо-контент -->
-            <div class="swiper-slide promo-card">
-                <div class="promo-card-content anime-element">
-                    <h2>Discover Your Go-To Source!</h2>
-                    <p>Get inspiration every day – our website is always there to offer something exciting!</p>
-                </div>
-            </div>
-
-            <!-- СЛАЙД 2: БЕЛАЯ КАРТОЧКА ПОВЕРХ IFRAME -->
-            <div class="swiper-slide promo-card" style="background: none;">
-                <div class="slide-iframe-wrapper">
-                    <!-- iframe на заднем плане -->
-                    <iframe src="https://ruziiiik1990-beep.github.io/glavna9/" class="background-iframe"></iframe>
-                    
-                    <!-- Белая карточка на переднем плане -->
-                    <div class="white-card-overlay anime-element">
-                        <img src="https://4ak4ak.moy.su/logo1.jpg" class="fixed-weapon-logo" alt="logo">
-                        <h2 style="color: #111827; margin: 0 0 10px 0; font-size: 24px;">Главная Панель</h2>
-                        <p style="color: #4b5563; margin: 0;">Слой iframe успешно интегрирован под белую карточку без ошибок CSP.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Контроллеры -->
-        <div class="promo-slider-controls">
-            <button class="swiper-btn swiper-btn-prev">◀</button>
-            <div class="promo-slider-fraction"></div>
-            <button class="swiper-btn swiper-btn-next">▶</button>
-        </div>
+<div class="leaderboard-container">
+    <div class="table-header">
+        <span>Игрок</span>
+        <span>Очки</span>
     </div>
+    <ul class="leaderboard-list" id="leaderboard"></ul>
 </div>
 
-<!-- Подключаем Swiper JS -->
-<script src="https://jsdelivr.net"></script>
-
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Инициализация Swiper
-        const swiper = new Swiper('.promo-slider', {
-            loop: true,
-            spaceBetween: 24,
-            pagination: {
-                el: ".promo-slider-fraction",
-                type: "fraction",
-            },
-            navigation: {
-                nextEl: '.swiper-btn-next',
-                prevEl: '.swiper-btn-prev',
-            },
-            on: {
-                init: function () {
-                    runAnimeEffect();
-                },
-                slideChange: function () {
-                    runAnimeEffect();
-                }
+    let players = [
+        { id: 1, name: "Безумный Макс", points: 150, role: "winner" },
+        { id: 2, name: "Ночной Призрак", points: 120, role: "finalist" },
+        { id: 3, name: "Стальной Лис", points: 95, role: "finalist" },
+        { id: 4, name: "Гроза Арены", points: 70, role: "player" },
+        { id: 5, name: "Тайный Нео", points: 45, role: "player" }
+    ];
+
+    const ROW_HEIGHT = 56; 
+    const logoUrl = "https://4ak4ak.moy.su/logo1.jpg";
+
+    function getRoleBadge(role) {
+        if (role === "winner") return '<span class="badge badge-winner">Победитель</span>';
+        if (role === "finalist") return '<span class="badge badge-finalist">Финалист</span>';
+        return '';
+    }
+
+    function initLeaderboard() {
+        const list = document.getElementById('leaderboard');
+        list.innerHTML = '';
+        
+        players.sort((a, b) => b.points - a.points);
+
+        players.forEach((player, index) => {
+            const li = document.createElement('li');
+            li.className = 'player-row';
+            li.setAttribute('data-id', player.id);
+            li.style.transform = `translateY(${index * ROW_HEIGHT}px)`;
+
+            li.innerHTML = `
+                <div class="player-info">
+                    <div class="rank-box">
+                        <span class="rank-num">#${index + 1}</span>
+                        <img src="${logoUrl}" class="rank-logo" alt="logo">
+                    </div>
+                    <div class="player-name-wrapper">
+                        <span class="player-name">${player.name}</span>
+                        ${getRoleBadge(player.role)}
+                    </div>
+                </div>
+                <div class="player-points" id="points-${player.id}">${player.points}</div>
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    function updatePositions() {
+        const sorted = [...players].sort((a, b) => b.points - a.points);
+
+        sorted.forEach((player, newIndex) => {
+            const row = document.querySelector(`.player-row[data-id="${player.id}"]`);
+            if (row) {
+                row.querySelector('.rank-num').innerText = `#${newIndex + 1}`;
+
+                anime({
+                    targets: row,
+                    translateY: newIndex * ROW_HEIGHT,
+                    duration: 600,
+                    easing: 'easeInOutQuad'
+                });
             }
         });
+    }
 
-        // Функция той самой 6-секундной комплексной анимации Anime.js
-        function runAnimeEffect() {
-            // Сбрасываем текущие стили перед запуском анимации
-            anime.remove('.anime-element');
+    function startSimulation() {
+        setInterval(() => {
+            const randomPlayerIndex = Math.floor(Math.random() * players.length);
+            const addedPoints = Math.floor(Math.random() * 20) + 10;
+            
+            players[randomPlayerIndex].points += addedPoints;
 
-            anime({
-                targets: '.anime-element',
-                // 1. Появление сверху вниз и зум (первые фазы цикла)
-                translateY: [
-                    { value: -400, duration: 0, easing: 'easeOutSine' }, // Стартуем высоко вверху
-                    { value: 0, duration: 1500, easing: 'easeOutBack' }, // Падаем в центр
-                    { value: 0, duration: 3000 },                        // Удерживаем позицию в центре
-                    { value: 500, duration: 1500, easing: 'easeInBack' } // Падаем вниз, исчезая
-                ],
-                scale: [
-                    { value: 0.2, duration: 0, easing: 'easeOutSine' },  // Сжаты в точку вверху
-                    { value: 1.1, duration: 1000, easing: 'easeOutQuad' }, // Пролетаем с легким увеличением
-                    { value: 1.0, duration: 500, easing: 'easeInOutQuad' },// Встаем в идеальный размер
-                    { value: 1.0, duration: 3000 },                        // Держим размер пока читают
-                    { value: 0.5, duration: 1500, easing: 'easeInQuad' }   // Сужаемся при падении вниз
-                ],
-                opacity: [
-                    { value: 0, duration: 0 },
-                    { value: 1, duration: 800 },
-                    { value: 1, duration: 3700 },
-                    { value: 0, duration: 1500 }
-                ],
-                duration: 6000, // Строго 6 секунд на весь цикл анимации
-                loop: false
-            });
-        }
+            const player = players[randomPlayerIndex];
+            const pointsElement = document.getElementById(`points-${player.id}`);
+            
+            if (pointsElement) {
+                pointsElement.innerText = player.points;
+                
+                anime({
+                    targets: pointsElement,
+                    scale: [1, 1.2, 1],
+                    duration: 300,
+                    easing: 'easeOutSine'
+                });
+            }
+
+            updatePositions();
+        }, 3000);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initLeaderboard();
+        startSimulation();
     });
 </script>
 
