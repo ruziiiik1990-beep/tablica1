@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -27,16 +26,7 @@
             box-sizing: border-box;
         }
 
-        .table-title {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            color: #3b82f6; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-        }
-
+        /* Шапка таблицы теперь является самым верхним элементом */
         .table-header {
             display: grid;
             grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr;
@@ -132,8 +122,7 @@
 <body>
 
 <div class="table-container">
-    <div class="table-title">Турнирная Таблица</div>
-    
+    <!-- Заголовок полностью удален отсюда -->
     <div class="table-header">
         <div>#</div>
         <div>Игрок</div>
@@ -150,7 +139,6 @@
 </div>
 
 <script>
-    // Все игроки начинают строго с 0 очков во всех колонках
     let players = [
         { id: 1, name: "45", champ: 0, finalist: 0, chak: 0 },
         { id: 2, name: "123", champ: 0, finalist: 0, chak: 0 },
@@ -202,17 +190,14 @@
         });
     }
 
-    // Чистая жесткая сортировка строго по набранным Чак-Чакам
     function updatePositions() {
         const sorted = [...players].sort((a, b) => b.chak - a.chak);
 
         sorted.forEach((player, newIndex) => {
             const row = document.querySelector(`.player-row[data-id="${player.id}"]`);
             if (row) {
-                // Плавная смена порядкового номера (#) на экране
                 row.querySelector('.rank-num').innerText = newIndex + 1;
 
-                // Перемещение строки физически вверх/вниз на её законную позицию
                 anime({
                     targets: row,
                     translateY: newIndex * ROW_HEIGHT,
@@ -230,23 +215,19 @@
             const player = players[randomPlayerIndex];
 
             if (isWin) {
-                // Победитель финала: +2 чак-чака, +1 чемпион
                 player.chak += 2;
                 player.champ += 1;
                 document.getElementById(`champ-${player.id}`).innerText = player.champ;
             } else {
-                // Проигрыш в финале (Финалист): +1 чак-чак, +1 финалист
                 player.chak += 1;
                 player.finalist += 1;
                 document.getElementById(`finalist-${player.id}`).innerText = player.finalist;
             }
 
-            // Обновляем количество Чак-Чаков в строке
             const chakElement = document.getElementById(`chak-${player.id}`);
             if (chakElement) {
                 chakElement.querySelector('.chak-value').innerText = player.chak;
                 
-                // Вспышка-пульсация цифр
                 anime({
                     targets: chakElement,
                     scale: [1, 1.3, 1],
@@ -255,7 +236,6 @@
                 });
             }
 
-            // Сразу пересчитываем места и запускаем анимацию сдвига
             updatePositions();
         }, 3000);
     }
