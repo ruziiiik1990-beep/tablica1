@@ -6,7 +6,7 @@
     <!-- Библиотека Anime.js для перемещения строк -->
     <script src="https://cloudflare.com"></script>
     <style>
-        /* Принудительно уничтожаем любые горизонтальные линии и рамки сверху на странице */
+        /* Полное уничтожение любых линий, разделителей и фонового мусора вне таблицы */
         hr, border, .separator, ::before, ::after {
             display: none !important;
             border: none !important;
@@ -99,12 +99,12 @@
         .col-rank { color: #9ca3af; font-weight: bold; transform: translateZ(15px); transition: color 0.3s; }
         .col-name { font-weight: bold; transform: translateZ(25px); }
         
-        /* Стили для топ-3 мест (подставляются скриптом) */
+        /* Стили для топ-3 мест */
         .rank-gold { color: #ffd700 !important; text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
         .rank-silver { color: #c0c0c0 !important; text-shadow: 0 0 8px rgba(192, 192, 192, 0.4); }
         .rank-bronze { color: #cd7f32 !important; text-shadow: 0 0 8px rgba(205, 127, 50, 0.4); }
 
-        /* Цвета ников по твоему макету */
+        /* Цвета ников */
         .player-row[data-name="45"] .col-name { color: #f59e0b; }
         .player-row[data-name="qweqwe"] .col-name { color: #ed8936; }
         
@@ -139,15 +139,19 @@
 
     let players = generatePlayers();
     const ROW_HEIGHT = 45;
-    const logoUrl = "https://4ak4ak.moy.su/logo1.jpg";
+    const logoUrl = "https://moy.su";
 
-    function removeExternalLabels() {
+    // Функция авто-удаления текстового мусора и внешних полос хостинга
+    function cleanExternalLayout() {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
         while (node = walker.nextNode()) {
-            if (node.nodeValue.toLowerCase().includes('tablica1')) {
+            const val = node.nodeValue.toLowerCase();
+            if (val.includes('tablica1') || val.includes('doctype')) {
                 const parent = node.parentElement;
-                if (parent && parent !== document.body && !parent.closest('.table-container')) parent.style.display = 'none';
+                if (parent && !parent.closest('.table-container') && parent !== document.body) {
+                    parent.style.display = 'none';
+                }
             }
         }
     }
@@ -167,14 +171,12 @@
         applyRankColors();
     }
 
-    // Принудительное окрашивание топ-3 позиций
     function applyRankColors() {
         const rows = document.querySelectorAll('.player-row');
         rows.forEach(row => {
             const rankBox = row.querySelector('.rank-num');
             const currentRank = parseInt(rankBox.innerText);
             
-            // Сбрасываем старые классы цвета перед проверкой
             rankBox.classList.remove('rank-gold', 'rank-silver', 'rank-bronze');
             
             if (currentRank === 1) rankBox.classList.add('rank-gold');
@@ -195,7 +197,7 @@
                     duration: 800, 
                     easing: 'easeInOutCubic',
                     complete: function() {
-                        applyRankColors(); // Красим только когда анимация перемещения завершилась
+                        applyRankColors();
                     }
                 });
             }
@@ -223,15 +225,13 @@
     const card = document.getElementById('card3d');
     card.addEventListener('mousemove', (e) => {
         const r = card.getBoundingClientRect();
-        const x = e.clientX - r.left;
-        const y = e.clientY - r.top;
-        const rotateX = ((r.height / 2) - y) / 10;
-        const rotateY = (x - (r.width / 2)) / 15;
+        const rotateX = ((r.height / 2) - (e.clientY - r.top)) / 10;
+        const rotateY = ((e.clientX - r.left) - (r.width / 2)) / 15;
         card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
     card.addEventListener('mouseleave', () => card.style.transform = 'rotateX(0deg) rotateY(0deg)');
 
-    document.addEventListener("DOMContentLoaded", () => { initLeaderboard(); removeExternalLabels(); startSimulation(); });
+    document.addEventListener("DOMContentLoaded", () => { initLeaderboard(); cleanExternalLayout(); startSimulation(); });
 </script>
 </body>
 </html>
