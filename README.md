@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Турнирная Таблица ЧакЧак — Игроки и Логотип</title>
+    <title>Турнирная Таблица ЧакЧак — Фикс Фона Ячеек</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -23,7 +23,8 @@
             position: relative;
             width: 100%;
             max-width: 650px;
-            background: transparent; 
+            /* ИСПРАВЛЕНО: Задали карточке тот же самый темный цвет */
+            background: #13151c !important; 
             border: 1px solid rgba(59, 130, 246, 0.2);
             border-radius: 16px;
             padding: 30px;
@@ -45,7 +46,7 @@
             transform-style: preserve-3d;
         }
 
-        /* Псевдоэлементы неонового свечения (Изначально скрыты) */
+        /* Псевдоэлементы neoнового свечения (Изначально скрыты) */
         .wrapper::before, .wrapper::after {
             content: "";
             position: absolute;
@@ -94,7 +95,8 @@
             border-collapse: collapse;
             text-align: center;
             color: #ffffff;
-            background: transparent; 
+            /* ИСПРАВЛЕНО: Жестко закрасили саму таблицу в цвет заднего плана */
+            background: #13151c !important; 
         }
 
         th {
@@ -104,18 +106,22 @@
             padding-bottom: 15px;
             text-transform: uppercase;
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            /* ИСПРАВЛЕНО: Установили цвет для шапки */
+            background: #13151c !important;
         }
 
         td {
             padding: 12px 5px;
             font-size: 15px;
             font-weight: 500;
-            background: transparent; 
+            /* ИСПРАВЛЕНО: Каждая ячейка теперь имеет принудительный темный цвет */
+            background: #13151c !important; 
         }
 
         tr {
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            background: transparent; 
+            /* ИСПРАВЛЕНО: Каждая строка имеет принудительный темный цвет */
+            background: #13151c !important; 
         }
 
         /* Цвета игроков и очков */
@@ -123,7 +129,6 @@
         .gold { color: #facc15; text-shadow: 0 0 8px rgba(250, 204, 21, 0.3); }
         .orange { color: #f97316; }
         
-        /* ИСПРАВЛЕНО: Стилизация контейнера твоего кастомного логотипа вместо смайлика */
         .chak-icon {
             display: inline-flex;
             align-items: center;
@@ -131,9 +136,9 @@
             gap: 6px;
             color: #facc15;
             vertical-align: middle;
+            background: #13151c !important;
         }
         
-        /* Настройка точного размера картинки чак-чака */
         .chak-img {
             width: 16px;
             height: 16px;
@@ -148,6 +153,7 @@
             color: #576575;
             margin-top: 20px;
             letter-spacing: 0.5px;
+            background: #13151c !important;
         }
     </style>
 </head>
@@ -170,7 +176,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- ИСПРАВЛЕНО: Добавлены случайные никнеймы и встроен тег картинки logo1.jpg -->
                 <tr>
                     <td class="rank">1</td>
                     <td class="gold">X-Slayer_99</td>
