@@ -1,16 +1,82 @@
-<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Таблица Рейтинга</title>
+    <!-- Подключаем библиотеку Anime.js -->
     <script src="https://cloudflare.com"></script>
     <style>
-        body { background-color: #374151; font-family: sans-serif; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; perspective: 1000px; }
-        .table-wrapper-3d { width: 100%; max-width: 650px; transition: transform 0.1s ease-out; transform-style: preserve-3d; cursor: pointer; }
-        .table-container { width: 100%; background: #465a8a; border-radius: 16px; padding: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); box-sizing: border-box; }
-        .table-header { display: grid; grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr; text-align: center; font-weight: bold; font-size: 13px; text-transform: uppercase; padding: 12px 10px; border: 1px solid rgba(255,255,255,0.3); border-bottom: 2px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); border-top-left-radius: 8px; border-top-right-radius: 8px; transform: translateZ(30px); }
-        .leaderboard-list { position: relative; height: 315px; margin: 0; padding: 0; list-style: none; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.3); border-top: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; overflow: hidden; transform: translateZ(20px); }
-        .player-row { position: absolute; left: 0; top: 0; width: 100%; height: 45px; display: grid; grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr; align-items: center; text-align: center; box-sizing: border-box; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 14px; background: #465a8a; will-change: transform; transform-style: preserve-3d; }
+        body { 
+            background-color: #374151; 
+            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; 
+            color: #fff; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            perspective: 1000px; 
+        }
+        .table-wrapper-3d { 
+            width: 100%; 
+            max-width: 650px; 
+            transition: transform 0.1s ease-out; 
+            transform-style: preserve-3d; 
+            cursor: pointer; 
+        }
+        .table-container { 
+            width: 100%; 
+            background: #465a8a; 
+            border-radius: 16px; 
+            padding: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
+            box-sizing: border-box; 
+        }
+        .table-header { 
+            display: grid; 
+            grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr; 
+            text-align: center; 
+            font-weight: bold; 
+            font-size: 13px; 
+            text-transform: uppercase; 
+            padding: 12px 10px; 
+            border: 1px solid rgba(255,255,255,0.3); 
+            border-bottom: 2px solid rgba(255,255,255,0.4); 
+            background: rgba(255,255,255,0.05); 
+            border-top-left-radius: 8px; 
+            border-top-right-radius: 8px; 
+            transform: translateZ(30px); 
+        }
+        .leaderboard-list { 
+            position: relative; 
+            height: 315px; 
+            margin: 0; 
+            padding: 0; 
+            list-style: none; 
+            background: rgba(255,255,255,0.02); 
+            border: 1px solid rgba(255,255,255,0.3); 
+            border-top: none; 
+            border-bottom-left-radius: 8px; 
+            border-bottom-right-radius: 8px; 
+            overflow: hidden; 
+            transform: translateZ(20px); 
+        }
+        .player-row { 
+            position: absolute; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 45px; 
+            display: grid; 
+            grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr; 
+            align-items: center; 
+            text-align: center; 
+            box-sizing: border-box; 
+            border-bottom: 1px solid rgba(255,255,255,0.2); 
+            font-size: 14px; 
+            background: #465a8a; 
+            will-change: transform; 
+            transform-style: preserve-3d; 
+        }
         .col-rank { color: #9ca3af; font-weight: bold; transform: translateZ(15px); }
         .col-name { font-weight: bold; transform: translateZ(25px); }
         .player-row[data-name="45"] .col-name { color: #f59e0b; }
@@ -102,7 +168,11 @@
     const card = document.getElementById('card3d');
     card.addEventListener('mousemove', (e) => {
         const r = card.getBoundingClientRect();
-        card.style.transform = `rotateX(${((r.height / 2) - (e.clientY - r.top)) / 10}deg) rotateY($ كمان- ((e.clientX - r.left) - (r.width / 2)) / 15}deg)`;
+        const x = e.clientX - r.left;
+        const y = e.clientY - r.top;
+        const rotateX = ((r.height / 2) - y) / 10;
+        const rotateY = (x - (r.width / 2)) / 15;
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
     card.addEventListener('mouseleave', () => card.style.transform = 'rotateX(0deg) rotateY(0deg)');
 
