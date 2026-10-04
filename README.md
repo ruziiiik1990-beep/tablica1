@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Турнирная Таблица ЧакЧик — Фикс Заголовка GitHub</title>
+    <title>Турнирная Таблица ЧакЧик — Таблица Рейтинга</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -17,8 +17,8 @@
             perspective: 1000px; /* Включаем 3D-пространство для эффектов */
         }
         
-        /* ИСПРАВЛЕНО: Скрываем заголовок h1 (tablica1), приходящий с GitHub */
-        .title h1, #tablica1, .tablica1, h1 {
+        /* ИСПРАВЛЕНО: Скрываем системный h1, приходящий с GitHub */
+        #tablica1, .tablica1, h1 {
             display: none !important;
             visibility: hidden !important;
             opacity: 0 !important;
@@ -54,7 +54,7 @@
             transform-style: preserve-3d;
         }
 
-        /* Псевдоэлементы неонового свечения (Изначально скрыты) */
+        /* Псевдоэлементы неонового свечения */
         .wrapper::before, .wrapper::after {
             content: "";
             position: absolute;
@@ -95,7 +95,20 @@
 
         /* Выталкиваем контент вперед по оси Z и вверх */
         .card:hover .title { 
-            transform: translate3d(0%, -50px, 100px); 
+            transform: translate3d(0%, -30px, 80px); 
+        }
+
+        /* Твой новый красивый заголовок над таблицей */
+        .main-header-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: #3b82f6;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            transform: translateZ(40px); /* Дополнительный объем для заголовка */
         }
 
         table {
@@ -143,13 +156,13 @@
             background: #13151c !important;
         }
         
-        /* Исправленные стили круглой иконки чак-чака */
+        /* Стили круглой иконки чак-чака */
         .chak-img {
             width: 20px;
             height: 20px;
             object-fit: contain;
             border-radius: 50%;
-            background: #ffffff; /* Белая подложка под иконку */
+            background: #ffffff; 
             padding: 1px;
             display: inline-block;
         }
@@ -172,6 +185,9 @@
     
     <!-- Весь контент таблицы, реагирующий на 3D Hover -->
     <div class="title">
+        <!-- Добавлен заголовок "Таблица Рейтинга" -->
+        <div class="main-header-title">Таблица Рейтинга</div>
+
         <table>
             <thead>
                 <tr>
@@ -188,54 +204,54 @@
                     <td class="gold">X-Slayer_99</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">2</td>
                     <td>Neon_Viper</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">3</td>
                     <td class="orange">Chak_Master</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">4</td>
                     <td>Cyber_Glitch</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">5</td>
                     <td>Zeus_Awper</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">6</td>
                     <td>Shadow_Step</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">7</td>
                     <td>Bullet_Rain</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
                 </tr>
             </tbody>
         </table>
         
-        <div class="footer-text">Победитель финала +2 чак-чака · Финалист +1 чак-чат</div>
+        <div class="footer-text">Победитель финала +2 чак-чака · Финалист +1 чак-чак</div>
     </div>
 </div>
 
