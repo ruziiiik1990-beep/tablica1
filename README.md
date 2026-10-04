@@ -23,7 +23,8 @@
             position: relative;
             width: 100%;
             max-width: 650px;
-            background: rgba(30, 34, 43, 0.65);
+            /* ИСПРАВЛЕНО: Полностью прозрачный фон карточки вместо полупрозрачного rgba */
+            background: transparent; 
             border: 1px solid rgba(59, 130, 246, 0.2);
             border-radius: 16px;
             padding: 30px;
@@ -105,6 +106,8 @@
             border-collapse: collapse;
             text-align: center;
             color: #ffffff;
+            /* ИСПРАВЛЕНО: Гарантируем прозрачность подложки самой таблицы */
+            background: transparent; 
         }
 
         th {
@@ -120,10 +123,14 @@
             padding: 12px 5px;
             font-size: 15px;
             font-weight: 500;
+            /* ИСПРАВЛЕНО: Установлен прозрачный фон для ячеек */
+            background: transparent; 
         }
 
         tr {
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            /* ИСПРАВЛЕНО: Установлен прозрачный фон для строк */
+            background: transparent; 
         }
 
         /* Цвета игроков и очков из оригинального скриншота */
