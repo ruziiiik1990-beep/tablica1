@@ -125,45 +125,7 @@
             font-size: 11px;
             color: #9ca3af;
             margin-top: 15px;
-            margin-bottom: 20px;
-        }
-
-        .admin-panel {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .admin-input {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            padding: 10px 20px;
-            color: #ffffff;
-            outline: none;
-            width: 160px;
-            font-size: 13px;
-        }
-
-        .admin-input::placeholder {
-            color: #9ca3af;
-        }
-
-        .admin-btn {
-            background: #1e3a8a;
-            border: 1px solid #2563eb;
-            color: #ffffff;
-            border-radius: 20px;
-            padding: 10px 24px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 13px;
-            transition: background 0.2s;
-        }
-
-        .admin-btn:hover {
-            background: #1d4ed8;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -185,15 +147,9 @@
     <div class="table-footer-text">
         Победитель финала +2 чак-чака • Финалист +1 чак-чака
     </div>
-
-    <div class="admin-panel">
-        <input type="password" class="admin-input" placeholder="Админ-пароль">
-        <button class="admin-btn">Войти как админ</button>
-    </div>
 </div>
 
 <script>
-    // Инициализируем массив игроков СТРОГО С НУЛЯМИ во всех полях
     let players = [
         { id: 1, name: "45", champ: 0, finalist: 0, chak: 0 },
         { id: 2, name: "123", champ: 0, finalist: 0, chak: 0 },
@@ -205,13 +161,26 @@
     ];
 
     const ROW_HEIGHT = 45; 
-    const logoUrl = "https://4ak4ak.moy.su/logo1.jpg";
+    const logoUrl = "https://moy.su";
+
+    // Функция авто-удаления текста tablica1, если он лезет из GitHub
+    function removeExternalLabels() {
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+        let node;
+        while (node = walker.nextNode()) {
+            if (node.nodeValue.toLowerCase().includes('tablica1')) {
+                const parent = node.parentElement;
+                if (parent && parent !== document.body && !parent.closest('.table-container')) {
+                    parent.style.display = 'none';
+                }
+            }
+        }
+    }
 
     function initLeaderboard() {
         const list = document.getElementById('leaderboard');
         list.innerHTML = '';
         
-        // Сортировка на старте (пока все равны, выстроятся по порядку)
         sortPlayers();
 
         players.forEach((player, index) => {
@@ -235,7 +204,6 @@
         });
     }
 
-    // Логика сортировки: сначала по Чак-Чакам, затем по Чемпионам, затем по Финалистам
     function sortPlayers() {
         players.sort((a, b) => {
             if (b.chak !== a.chak) return b.chak - a.chak;
@@ -262,32 +230,27 @@
         });
     }
 
-    // Симуляция: каждые 3.5 секунды происходит игровое событие
     function startSimulation() {
         setInterval(() => {
             const randomPlayerIndex = Math.floor(Math.random() * players.length);
-            const isWin = Math.random() > 0.5; // 50% шанс на победу или проигрыш в финале
+            const isWin = Math.random() > 0.5; 
             
             const player = players[randomPlayerIndex];
 
             if (isWin) {
-                // Победа: +2 Чак-чака, +1 Чемпион
                 player.chak += 2;
                 player.champ += 1;
                 document.getElementById(`champ-${player.id}`).innerText = player.champ;
             } else {
-                // Проигрыш в финале: +1 Чак-чак, +1 Финалист
                 player.chak += 1;
                 player.finalist += 1;
                 document.getElementById(`finalist-${player.id}`).innerText = player.finalist;
             }
 
-            // Обновляем текстовое поле Чак-Чака
             const chakElement = document.getElementById(`chak-${player.id}`);
             if (chakElement) {
                 chakElement.querySelector('.chak-value').innerText = player.chak;
                 
-                // Пульсация ячейки при начислении очков
                 anime({
                     targets: chakElement,
                     scale: [1, 1.3, 1],
@@ -296,13 +259,13 @@
                 });
             }
 
-            // Запускаем перестроение анимации
             updatePositions();
         }, 3500);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
         initLeaderboard();
+        removeExternalLabels();
         startSimulation();
     });
 </script>
