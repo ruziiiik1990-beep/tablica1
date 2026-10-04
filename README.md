@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Турнирная Таблица ЧакЧик — Таблица Рейтинга</title>
+    <title>Турнирная Таблица ЧакЧак</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -14,10 +15,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            perspective: 1000px; /* Включаем 3D-пространство для эффектов */
+            perspective: 1000px;
         }
         
-        /* ИСПРАВЛЕНО: Скрываем системный h1, приходящий с GitHub */
         #tablica1, .tablica1, h1 {
             display: none !important;
             visibility: hidden !important;
@@ -27,7 +27,6 @@
             padding: 0 !important;
         }
         
-        /* ИНТЕРАКТИВНЫЙ 3D-КОНТЕЙНЕР ТАБЛИЦЫ */
         .card {
             position: relative;
             width: 100%;
@@ -42,7 +41,6 @@
             transition: transform 0.5s ease, border-color 0.5s ease;
         }
 
-        /* ОБЁРТКА ДЛЯ НЕОНОВЫХ ЭФФЕКТОВ */
         .wrapper {
             position: absolute;
             top: 0;
@@ -54,7 +52,6 @@
             transform-style: preserve-3d;
         }
 
-        /* Псевдоэлементы неонового свечения */
         .wrapper::before, .wrapper::after {
             content: "";
             position: absolute;
@@ -70,13 +67,11 @@
         .wrapper::before { top: -5px; height: 5px; }
         .wrapper::after { bottom: -5px; height: 5px; }
 
-        /* Зажигаем неон при наведении */
         .card:hover .wrapper::before, 
         .card:hover .wrapper::after { 
             opacity: 1; 
         } 
 
-        /* Вытягиваем нижний неон до 120px */
         .card:hover .wrapper::after { 
             height: 120px; 
             background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.4));
@@ -86,19 +81,16 @@
             border-color: rgba(59, 130, 246, 0.6);
         }
 
-        /* Контент с плавной 3D-трансформацией */
         .title { 
             width: 100%; 
             transition: transform 0.5s ease;
             transform: translate3d(0%, 0px, 0px);
         }
 
-        /* Выталкиваем контент вперед по оси Z и вверх */
         .card:hover .title { 
             transform: translate3d(0%, -30px, 80px); 
         }
 
-        /* Твой новый красивый заголовок над таблицей */
         .main-header-title {
             text-align: center;
             font-size: 22px;
@@ -108,7 +100,7 @@
             letter-spacing: 1.5px;
             margin-bottom: 25px;
             text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-            transform: translateZ(40px); /* Дополнительный объем для заголовка */
+            transform: translateZ(40px);
         }
 
         table {
@@ -141,7 +133,6 @@
             background: #13151c !important; 
         }
 
-        /* Цвета игроков и очков */
         .rank { color: #94a3b8; font-weight: bold; }
         .gold { color: #facc15; text-shadow: 0 0 8px rgba(250, 204, 21, 0.3); }
         .orange { color: #f97316; }
@@ -156,14 +147,11 @@
             background: #13151c !important;
         }
         
-        /* Стили круглой иконки чак-чака */
+        /* ИСПРАВЛЕНО: Убран белый фон, мешавший картинке отображаться */
         .chak-img {
             width: 20px;
             height: 20px;
             object-fit: contain;
-            border-radius: 50%;
-            background: #ffffff; 
-            padding: 1px;
             display: inline-block;
         }
 
@@ -179,15 +167,10 @@
 </head>
 <body>
 
-<!-- Интерактивная 3D Карточка турнирной таблицы -->
 <div class="card" id="tableCard">
     <div class="wrapper"></div>
-    
-    <!-- Весь контент таблицы, реагирующий на 3D Hover -->
     <div class="title">
-        <!-- Добавлен заголовок "Таблица Рейтинга" -->
         <div class="main-header-title">Таблица Рейтинга</div>
-
         <table>
             <thead>
                 <tr>
@@ -204,66 +187,63 @@
                     <td class="gold">X-Slayer_99</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">2</td>
                     <td>Neon_Viper</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">3</td>
                     <td class="orange">Chak_Master</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">4</td>
                     <td>Cyber_Glitch</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">5</td>
                     <td>Zeus_Awper</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">6</td>
                     <td>Shadow_Step</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">7</td>
                     <td>Bullet_Rain</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" alt="chak"></span></td>
                 </tr>
             </tbody>
         </table>
-        
         <div class="footer-text">Победитель финала +2 чак-чака · Финалист +1 чак-чак</div>
     </div>
 </div>
 
 <script>
     const card = document.getElementById('tableCard');
-
     window.addEventListener('mousemove', (e) => {
         const x = (e.clientX / window.innerWidth) - 0.5;
         const y = (e.clientY / window.innerHeight) - 0.5;
         card.style.transform = `rotateX(${-y * 30}deg) rotateY(${x * 30}deg)`;
     });
-
     card.addEventListener('mouseleave', () => {
         card.style.transform = `rotateX(0deg) rotateY(0deg)`;
     });
