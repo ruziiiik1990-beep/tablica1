@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Турнирная Таблица ЧакЧак — Фикс Фона Ячеек</title>
+    <title>Турнирная Таблица ЧакЧак — Рабочие Картинки</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -23,7 +23,6 @@
             position: relative;
             width: 100%;
             max-width: 650px;
-            /* ИСПРАВЛЕНО: Задали карточке тот же самый темный цвет */
             background: #13151c !important; 
             border: 1px solid rgba(59, 130, 246, 0.2);
             border-radius: 16px;
@@ -46,7 +45,7 @@
             transform-style: preserve-3d;
         }
 
-        /* Псевдоэлементы neoнового свечения (Изначально скрыты) */
+        /* Псевдоэлементы неонового свечения (Изначально скрыты) */
         .wrapper::before, .wrapper::after {
             content: "";
             position: absolute;
@@ -95,7 +94,6 @@
             border-collapse: collapse;
             text-align: center;
             color: #ffffff;
-            /* ИСПРАВЛЕНО: Жестко закрасили саму таблицу в цвет заднего плана */
             background: #13151c !important; 
         }
 
@@ -106,7 +104,6 @@
             padding-bottom: 15px;
             text-transform: uppercase;
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-            /* ИСПРАВЛЕНО: Установили цвет для шапки */
             background: #13151c !important;
         }
 
@@ -114,13 +111,11 @@
             padding: 12px 5px;
             font-size: 15px;
             font-weight: 500;
-            /* ИСПРАВЛЕНО: Каждая ячейка теперь имеет принудительный темный цвет */
             background: #13151c !important; 
         }
 
         tr {
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            /* ИСПРАВЛЕНО: Каждая строка имеет принудительный темный цвет */
             background: #13151c !important; 
         }
 
@@ -139,12 +134,12 @@
             background: #13151c !important;
         }
         
+        /* ИСПРАВЛЕНО: Безопасные стили для стабильной загрузки изображения */
         .chak-img {
             width: 16px;
             height: 16px;
-            object-fit: cover;
-            border-radius: 4px;
             display: inline-block;
+            border-radius: 4px;
         }
 
         .footer-text {
@@ -181,49 +176,49 @@
                     <td class="gold">X-Slayer_99</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" loading="lazy" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">2</td>
                     <td>Neon_Viper</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" loading="lazy" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">3</td>
                     <td class="orange">Chak_Master</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" loading="lazy" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">4</td>
                     <td>Cyber_Glitch</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" loading="lazy" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">5</td>
                     <td>Zeus_Awper</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" loading="lazy" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">6</td>
                     <td>Shadow_Step</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" loading="lazy" alt="chak"></span></td>
                 </tr>
                 <tr>
                     <td class="rank">7</td>
                     <td>Bullet_Rain</td>
                     <td class="orange">1</td>
                     <td class="orange">0</td>
-                    <td><span class="chak-icon">2 <img src="https://moy.su" class="chak-img" alt="chak"></span></td>
+                    <td><span class="chak-icon">2 <img src="https://4ak4ak.moy.su/logo1.jpg" class="chak-img" loading="lazy" alt="chak"></span></td>
                 </tr>
             </tbody>
         </table>
