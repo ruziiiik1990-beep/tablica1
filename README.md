@@ -33,7 +33,7 @@
             transition: transform 0.1s ease-out; 
             transform-style: preserve-3d; 
             cursor: pointer;
-            border-top: none !important; /* Убираем возможную рамку сверху */
+            border-top: none !important;
         }
 
         .table-container { 
@@ -45,7 +45,7 @@
             box-sizing: border-box; 
         }
 
-        /* Самый верхний элемент таблицы — шапка, никаких заголовков и линий */
+        /* Шапка таблицы */
         .table-header { 
             display: grid; 
             grid-template-columns: 0.6fr 2fr 1.2fr 1.2fr 1.2fr; 
@@ -77,7 +77,7 @@
             transform: translateZ(20px); 
         }
 
-        /* Строка игрока с поддержкой анимации движения */
+        /* Строка игрока */
         .player-row { 
             position: absolute; 
             left: 0; 
@@ -96,9 +96,14 @@
             transform-style: preserve-3d; 
         }
 
-        .col-rank { color: #9ca3af; font-weight: bold; transform: translateZ(15px); }
+        .col-rank { color: #9ca3af; font-weight: bold; transform: translateZ(15px); transition: color 0.3s; }
         .col-name { font-weight: bold; transform: translateZ(25px); }
         
+        /* Стили для топ-3 мест (подставляются скриптом) */
+        .rank-gold { color: #ffd700 !important; text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+        .rank-silver { color: #c0c0c0 !important; text-shadow: 0 0 8px rgba(192, 192, 192, 0.4); }
+        .rank-bronze { color: #cd7f32 !important; text-shadow: 0 0 8px rgba(205, 127, 50, 0.4); }
+
         /* Цвета ников по твоему макету */
         .player-row[data-name="45"] .col-name { color: #f59e0b; }
         .player-row[data-name="qweqwe"] .col-name { color: #ed8936; }
@@ -136,7 +141,6 @@
     const ROW_HEIGHT = 45;
     const logoUrl = "https://4ak4ak.moy.su/logo1.jpg";
 
-    // Очистка от внешних надписей хостинга
     function removeExternalLabels() {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
@@ -160,16 +164,40 @@
             li.innerHTML = `<div class="col-rank rank-num">${i + 1}</div><div class="col-name">${p.name}</div><div class="col-champ" id="champ-${p.id}">${p.champ}</div><div class="col-finalist" id="finalist-${p.id}">${p.finalist}</div><div class="col-chak" id="chak-${p.id}"><span class="chak-value">${p.chak}</span><img src="${logoUrl}" class="chak-icon" alt="*"></div>`;
             list.appendChild(li);
         });
+        applyRankColors();
     }
 
-    // Перемещение всей строки по вертикали на базе Anime.js
+    // Принудительное окрашивание топ-3 позиций
+    function applyRankColors() {
+        const rows = document.querySelectorAll('.player-row');
+        rows.forEach(row => {
+            const rankBox = row.querySelector('.rank-num');
+            const currentRank = parseInt(rankBox.innerText);
+            
+            // Сбрасываем старые классы цвета перед проверкой
+            rankBox.classList.remove('rank-gold', 'rank-silver', 'rank-bronze');
+            
+            if (currentRank === 1) rankBox.classList.add('rank-gold');
+            else if (currentRank === 2) rankBox.classList.add('rank-silver');
+            else if (currentRank === 3) rankBox.classList.add('rank-bronze');
+        });
+    }
+
     function updatePositions() {
         const sorted = [...players].sort((a, b) => b.chak - a.chak);
         sorted.forEach((p, newIndex) => {
             const row = document.querySelector(`.player-row[data-id="${p.id}"]`);
             if (row) {
                 row.querySelector('.rank-num').innerText = newIndex + 1;
-                anime({ targets: row, translateY: newIndex * ROW_HEIGHT, duration: 800, easing: 'easeInOutCubic' });
+                anime({ 
+                    targets: row, 
+                    translateY: newIndex * ROW_HEIGHT, 
+                    duration: 800, 
+                    easing: 'easeInOutCubic',
+                    complete: function() {
+                        applyRankColors(); // Красим только когда анимация перемещения завершилась
+                    }
+                });
             }
         });
     }
@@ -192,7 +220,6 @@
         }, 3500);
     }
 
-    // Логика объемного 3D наклона карточки
     const card = document.getElementById('card3d');
     card.addEventListener('mousemove', (e) => {
         const r = card.getBoundingClientRect();
